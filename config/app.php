@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

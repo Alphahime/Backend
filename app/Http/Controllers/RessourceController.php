@@ -27,7 +27,7 @@ class RessourceController extends Controller
             'description' => 'required|string',
             'lien' => 'required|url',
             'domaine_sportif_id' => 'required|integer|exists:domaine_sportifs,id',
-            'user_id' => 'required|integer|exists:users,id', // Ajout de la validation pour user_id
+            'user_id' => 'required|integer|exists:users,id', 
         ]);
     
         $ressource = Ressource::create($validated);
@@ -36,7 +36,7 @@ class RessourceController extends Controller
             'success' => true,
             'message' => 'Ressource créée avec succès.',
             'data' => $ressource
-        ], 201); // 201 Created
+        ], 201); 
     }
     
 

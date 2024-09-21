@@ -53,6 +53,7 @@ public function update(UpdateCommentaireRequest $request, Commentaire $commentai
 
     $validatedData = $request->validated();
     $commentaire->update($validatedData);
+    
     return response()->json($commentaire);
 }
 

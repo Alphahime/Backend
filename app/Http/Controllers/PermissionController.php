@@ -4,56 +4,39 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
-use App\Http\Requests\StorePermissionRequest;
-use App\Http\Requests\UpdatePermissionRequest;
 
 class PermissionController extends Controller
 {
-    // Afficher la liste des permissions
     public function index()
     {
-        $permissions = Permission::all();
-        return view('permissions.index', compact('permissions'));
+        return response()->json(Permission::all());
     }
 
-    // Afficher le formulaire de création d'une permission
-    public function create()
+    public function store(Request $request)
     {
-        return view('permissions.create');
+        $validated = $request->validate(['name' => 'required|string|unique:permissions']);
+        $permission = Permission::create($validated);
+        return response()->json($permission, 201);
     }
 
-    // Stocker une nouvelle permission
-    public function store(StorePermissionRequest $request)
+    public function show($id)
     {
-        Permission::create([
-            'name' => $request->name,
-            'guard_name' => $request->guard_name,
-        ]);
-
-        return redirect()->route('permissions.index')->with('success', 'Permission created successfully.');
+        $permission = Permission::findOrFail($id);
+        return response()->json($permission);
     }
 
-    // Afficher le formulaire d'édition d'une permission
-    public function edit(Permission $permission)
+    public function update(Request $request, $id)
     {
-        return view('permissions.edit', compact('permission'));
+        $permission = Permission::findOrFail($id);
+        $validated = $request->validate(['name' => 'required|string|unique:permissions,name,' . $permission->id]);
+        $permission->update($validated);
+        return response()->json($permission);
     }
 
-    // Mettre à jour une permission
-    public function update(UpdatePermissionRequest $request, Permission $permission)
+    public function destroy($id)
     {
-        $permission->update([
-            'name' => $request->name,
-            'guard_name' => $request->guard_name,
-        ]);
-
-        return redirect()->route('permissions.index')->with('success', 'Permission updated successfully.');
-    }
-
-    // Supprimer une permission
-    public function destroy(Permission $permission)
-    {
+        $permission = Permission::findOrFail($id);
         $permission->delete();
-        return redirect()->route('permissions.index')->with('success', 'Permission deleted successfully.');
+        return response()->json(null, 204);
     }
 }

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
@@ -15,7 +15,9 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'nom', 'prenom', 'email', 'mot_de_passe', 'telephone', 'localisation',
+    ];
 
     /**
      * Les attributs qui doivent être cachés pour la sérialisation.
@@ -23,9 +25,18 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'mot_de_passe', 'remember_token',
     ];
+
+    /**
+     * Retourne le mot de passe pour l'authentification.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->mot_de_passe;
+    }
 
     /**
      * Les attributs qui doivent être castés en types natifs.
@@ -34,13 +45,29 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
 
     /**
-     * Relations avec les modèles
+     * Retourne l'identifiant unique pour JWT.
+     *
+     * @return mixed
      */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
 
+    /**
+     * Retourne un tableau de revendications personnalisées à ajouter au JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    // Relations avec les modèles
     public function planNutritionnel()
     {
         return $this->hasOne(PlanNutritionnel::class);
@@ -70,8 +97,16 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
+
     public function commentaires()
     {
         return $this->hasMany(Commentaire::class);
     }
+
+    public function setPasswordAttribute($value)
+{
+    $this->attributes['password'] = bcrypt($value);
 }
+
+}
+

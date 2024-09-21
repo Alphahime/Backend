@@ -4,56 +4,39 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
 
 class RoleController extends Controller
 {
-    // Afficher la liste des rôles
     public function index()
     {
-        $roles = Role::all();
-        return view('roles.index', compact('roles'));
+        return response()->json(Role::all());
     }
 
-    // Afficher le formulaire de création d'un rôle
-    public function create()
+    public function store(Request $request)
     {
-        return view('roles.create');
+        $validated = $request->validate(['name' => 'required|string|unique:roles']);
+        $role = Role::create($validated);
+        return response()->json($role, 201);
     }
 
-    // Stocker un nouveau rôle
-    public function store(StoreRoleRequest $request)
+    public function show($id)
     {
-        Role::create([
-            'name' => $request->name,
-            'guard_name' => $request->guard_name,
-        ]);
-
-        return redirect()->route('roles.index')->with('success', 'Role created successfully.');
+        $role = Role::findOrFail($id);
+        return response()->json($role);
     }
 
-    // Afficher le formulaire d'édition d'un rôle
-    public function edit(Role $role)
+    public function update(Request $request, $id)
     {
-        return view('roles.edit', compact('role'));
+        $role = Role::findOrFail($id);
+        $validated = $request->validate(['name' => 'required|string|unique:roles,name,' . $role->id]);
+        $role->update($validated);
+        return response()->json($role);
     }
 
-    // Mettre à jour un rôle
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function destroy($id)
     {
-        $role->update([
-            'name' => $request->name,
-            'guard_name' => $request->guard_name,
-        ]);
-
-        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
-    }
-
-    // Supprimer un rôle
-    public function destroy(Role $role)
-    {
+        $role = Role::findOrFail($id);
         $role->delete();
-        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
+        return response()->json(null, 204);
     }
 }

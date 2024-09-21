@@ -18,7 +18,7 @@ class ReservationController extends Controller
 
         $coach = $reservation->coach;
         if ($coach) {
-            Mail::to($coach->email)->send(new ReservationCreated($reservation));
+           // Mail::to($coach->email)->send(new ReservationCreated($reservation));
         }
 
         return response()->json($reservation, 201);
@@ -37,7 +37,7 @@ class ReservationController extends Controller
         if ($reservation->status === 'completed') {
             $client = $reservation->client;
             if ($client) {
-                Mail::to($client->email)->send(new ReservationCompleted($reservation));
+               // Mail::to($client->email)->send(new ReservationCompleted($reservation));
             }
         }
 

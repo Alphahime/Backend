@@ -10,7 +10,7 @@ class CreateReservationsTable extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Client
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); 
             $table->timestamp('date_seance');
             $table->enum('status', ['pending', 'confirmed', 'completed'])->default('pending');
             $table->timestamps();
