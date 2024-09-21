@@ -18,6 +18,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\JWTAuthController;
 use App\Http\Controllers\UserController;
 
+
 // Routes accessibles sans authentification
 Route::post('register', [JWTAuthController::class, 'register']);
 Route::post('login', [JWTAuthController::class, 'login']);

@@ -1,10 +1,621 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API Sport et bien-être",
+        "title": "API des Commentaires",
         "version": "1.0"
     },
     "paths": {
+        "/api/articles": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Liste des articles",
+                "operationId": "11aa4cc6561a7b94c56d1201d62513ee",
+                "responses": {
+                    "200": {
+                        "description": "Liste des articles récupérée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Article"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Créer un nouvel article",
+                "description": "Enregistre un nouvel article lié à l'utilisateur authentifié.",
+                "operationId": "e328bed23caf889ad982ad3f1180bccb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom",
+                                    "description",
+                                    "type_article"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Titre de l'article"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description de l'article"
+                                    },
+                                    "type_article": {
+                                        "type": "string",
+                                        "example": "Type d'article"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Article créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article créé avec succès."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Article"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Données d'entrée invalides"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/articles/{id}": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Afficher un article spécifique",
+                "description": "Récupère un article spécifique avec les informations de l'utilisateur associé.",
+                "operationId": "b3e529eab04efb5d305b07e2e58d9869",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article récupéré avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Article"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Article non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Article non trouvé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Mettre à jour un article",
+                "description": "Met à jour un article existant.",
+                "operationId": "2717d5a8e3b1f16637aded325347f9ad",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom",
+                                    "description",
+                                    "type_article"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Titre mis à jour"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Nouvelle description de l'article"
+                                    },
+                                    "type_article": {
+                                        "type": "string",
+                                        "example": "Nouveau type"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Article mis à jour avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article mis à jour avec succès."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Article"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Article non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Article non trouvé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Supprimer un article",
+                "description": "Supprime un article existant.",
+                "operationId": "97f34592611a1dd53a086865e29706c9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article supprimé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article supprimé avec succès."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Article non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Article non trouvé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/commentaires": {
+            "get": {
+                "tags": [
+                    "Commentaires"
+                ],
+                "summary": "Lister tous les commentaires",
+                "operationId": "ee4d918480e497cee636424744ecfebb",
+                "responses": {
+                    "200": {
+                        "description": "Liste des commentaires récupérée avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Commentaire"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Commentaires"
+                ],
+                "summary": "Créer un nouveau commentaire",
+                "operationId": "983601800620fa4f84fc84a6fc5dc405",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCommentaireRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Commentaire créé avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Commentaire"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/commentaires/{id}": {
+            "get": {
+                "tags": [
+                    "Commentaires"
+                ],
+                "summary": "Afficher un commentaire spécifique",
+                "operationId": "e8498196bc11759bbebadfd81b0d7484",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Commentaire récupéré avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Commentaire"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Commentaire non trouvé."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Commentaires"
+                ],
+                "summary": "Mettre à jour un commentaire spécifique",
+                "operationId": "e72e2de188dc869574a02ac882e99543",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCommentaireRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Commentaire mis à jour avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Commentaire"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Action non autorisée."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Commentaires"
+                ],
+                "summary": "Supprimer un commentaire spécifique",
+                "operationId": "c4030e179dc97d2c0a895705c82bfa13",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Commentaire supprimé avec succès."
+                    },
+                    "403": {
+                        "description": "Action non autorisée."
+                    }
+                }
+            }
+        },
+        "/api/domaines-sportifs": {
+            "get": {
+                "tags": [
+                    "Domaines Sportifs"
+                ],
+                "summary": "Lister tous les domaines sportifs",
+                "operationId": "ebc73829886412a28d7e19bd33a58cae",
+                "responses": {
+                    "200": {
+                        "description": "Liste des domaines sportifs récupérée avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DomaineSportif"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Domaines Sportifs"
+                ],
+                "summary": "Créer un nouveau domaine sportif",
+                "operationId": "c65473a2c9ff3b186ee3302adc9d3517",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreDomaineSportifRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Domaine sportif créé avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DomaineSportif"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/domaines-sportifs/{id}": {
+            "get": {
+                "tags": [
+                    "Domaines Sportifs"
+                ],
+                "summary": "Afficher un domaine sportif spécifique",
+                "operationId": "ad699c8a73acfa9c75d052c40deee0a2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Domaine sportif récupéré avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DomaineSportif"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Domaine sportif non trouvé."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Domaines Sportifs"
+                ],
+                "summary": "Mettre à jour un domaine sportif spécifique",
+                "operationId": "3d3b309b4f02dfa16c1f98310c2ff0df",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDomaineSportifRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Domaine sportif mis à jour avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DomaineSportif"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Domaine sportif non trouvé."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Domaines Sportifs"
+                ],
+                "summary": "Supprimer un domaine sportif spécifique",
+                "operationId": "b64c5fff91182dc8511917509a1b1f89",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Domaine sportif supprimé avec succès."
+                    },
+                    "404": {
+                        "description": "Domaine sportif non trouvé."
+                    }
+                }
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
@@ -38,7 +649,7 @@
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "alpha.@example.com"
+                                        "example": "john.doe@example.com"
                                     },
                                     "mot_de_passe": {
                                         "type": "string",
@@ -99,69 +710,52 @@
                 }
             }
         },
-        "/api/login": {
+        "/api/plans-nutritionnels": {
+            "get": {
+                "tags": [
+                    "Plans Nutritionnels"
+                ],
+                "summary": "Lister tous les plans nutritionnels",
+                "operationId": "890bedde826c7b3f94bc57636c67266a",
+                "responses": {
+                    "200": {
+                        "description": "Liste des plans nutritionnels récupérée avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PlanNutritionnel"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
-                    "Auth"
+                    "Plans Nutritionnels"
                 ],
-                "summary": "Connexion d'un utilisateur",
-                "description": "Connecte un utilisateur et génère un jeton JWT",
-                "operationId": "5901742bd641a8d1474bcf8bb2cb7982",
+                "summary": "Créer un nouveau plan nutritionnel",
+                "operationId": "eee863a80f0e24a7ae936d7efc05b0ef",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "email",
-                                    "mot_de_passe"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "john.doe@example.com"
-                                    },
-                                    "mot_de_passe": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password123"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/StorePlanNutritionnelRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Authentification réussie",
+                    "201": {
+                        "description": "Plan nutritionnel créé avec succès.",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "token": {
-                                            "type": "string",
-                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Identifiants incorrects",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Identifiants invalides"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/PlanNutritionnel"
                                 }
                             }
                         }
@@ -169,90 +763,517 @@
                 }
             }
         },
-        "/api/user": {
+        "/api/plans-nutritionnels/{id}": {
             "get": {
                 "tags": [
-                    "Auth"
+                    "Plans Nutritionnels"
                 ],
-                "summary": "Obtenir l'utilisateur connecté",
-                "description": "Récupère les informations de l'utilisateur connecté à partir du jeton JWT",
-                "operationId": "43339fb897cbfd4a69106f346afd97c6",
+                "summary": "Afficher un plan spécifique",
+                "operationId": "4a6e4f3a89cb8b4276f05462adb06011",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Détails de l'utilisateur récupérés avec succès",
+                        "description": "Détails du plan récupérés avec succès.",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/PlanNutritionnel"
                                 }
                             }
                         }
                     },
-                    "401": {
-                        "description": "Utilisateur non authentifié",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Utilisateur non authentifié"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
+                    "404": {
+                        "description": "Plan nutritionnel non trouvé."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Plans Nutritionnels"
+                ],
+                "summary": "Mettre à jour un plan nutritionnel",
+                "operationId": "80faf2e6bbba620ed0b7b8f0e9db42f9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePlanNutritionnelRequest"
                             }
                         }
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/logout": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Déconnexion d'un utilisateur",
-                "description": "Invalide le jeton JWT de l'utilisateur connecté",
-                "operationId": "c426006f932e75b0e57a555970770d4f",
                 "responses": {
                     "200": {
-                        "description": "Déconnexion réussie",
+                        "description": "Plan nutritionnel mis à jour avec succès.",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Déconnexion réussie"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/PlanNutritionnel"
                                 }
                             }
                         }
                     }
-                },
-                "security": [
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Plans Nutritionnels"
+                ],
+                "summary": "Supprimer un plan nutritionnel",
+                "operationId": "1fb0d0feb3d95b629f8e8e6e681e7b32",
+                "parameters": [
                     {
-                        "bearerAuth": []
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan nutritionnel supprimé avec succès."
+                    },
+                    "404": {
+                        "description": "Plan nutritionnel non trouvé."
+                    }
+                }
+            }
+        },
+        "/api/programmes-entrainement": {
+            "get": {
+                "tags": [
+                    "Programmes d'Entraînement"
+                ],
+                "summary": "Lister tous les programmes d'entraînement",
+                "operationId": "9165d0f309ee3ef295a534dc49e0cff8",
+                "responses": {
+                    "200": {
+                        "description": "Liste des programmes d'entraînement récupérée avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProgrammeEntrainement"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Programmes d'Entraînement"
+                ],
+                "summary": "Créer un nouveau programme d'entraînement",
+                "operationId": "be2f98b20681eff18bd9a0d182155bc8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreProgrammeEntrainementRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Programme d'entraînement créé avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProgrammeEntrainement"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/programmes-entrainement/{id}": {
+            "get": {
+                "tags": [
+                    "Programmes d'Entraînement"
+                ],
+                "summary": "Afficher un programme d'entraînement spécifique",
+                "operationId": "2efb0998001abf54bfbb22ebac3c859b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du programme d'entraînement récupérés avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProgrammeEntrainement"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Programme d'entraînement non trouvé."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Programmes d'Entraînement"
+                ],
+                "summary": "Mettre à jour un programme d'entraînement",
+                "operationId": "3a348083ba77b4c9cc1e3238559a92d7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProgrammeEntrainementRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Programme d'entraînement mis à jour avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProgrammeEntrainement"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Programmes d'Entraînement"
+                ],
+                "summary": "Supprimer un programme d'entraînement",
+                "operationId": "18624918f5900b7d3d5d0fb69020e569",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Programme d'entraînement supprimé avec succès."
+                    },
+                    "404": {
+                        "description": "Programme d'entraînement non trouvé."
+                    }
+                }
+            }
+        },
+        "/seances": {
+            "get": {
+                "tags": [
+                    "Séances d'Entraînement"
+                ],
+                "summary": "Lister toutes les séances d'entraînement",
+                "operationId": "583d26a889736888fdf2021850bdc8f0",
+                "responses": {
+                    "200": {
+                        "description": "Liste des séances d'entraînement"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Séances d'Entraînement"
+                ],
+                "summary": "Créer une nouvelle séance d'entraînement",
+                "operationId": "1987f570500dcd5f523384522cf70e5c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SeanceEntrainement"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Séance d'entraînement créée avec succès"
+                    }
+                }
+            }
+        },
+        "/seances/{id}": {
+            "put": {
+                "tags": [
+                    "Séances d'Entraînement"
+                ],
+                "summary": "Mettre à jour une séance d'entraînement",
+                "operationId": "4fe1ba31d66bdde3d143c31c2631ac11",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la séance d'entraînement",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SeanceEntrainement"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Séance d'entraînement mise à jour avec succès"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Séances d'Entraînement"
+                ],
+                "summary": "Supprimer une séance d'entraînement",
+                "operationId": "8541390d5809cc24b2e64a0ec5540f93",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la séance d'entraînement",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Séance d'entraînement supprimée avec succès"
+                    }
+                }
             }
         }
     },
     "components": {
         "schemas": {
+            "Article": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nom": {
+                        "type": "string",
+                        "example": "Titre de l'article"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Description de l'article"
+                    },
+                    "type_article": {
+                        "type": "string",
+                        "example": "Type d'article"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Commentaire": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Ceci est un commentaire."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreCommentaireRequest": {
+                "required": [
+                    "content"
+                ],
+                "properties": {
+                    "content": {
+                        "type": "string",
+                        "example": "Ceci est un commentaire."
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateCommentaireRequest": {
+                "required": [
+                    "content"
+                ],
+                "properties": {
+                    "content": {
+                        "type": "string",
+                        "example": "Ceci est un commentaire modifié."
+                    }
+                },
+                "type": "object"
+            },
+            "DomaineSportif": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Football"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Category"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Category": {
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Catégorie de Football"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreDomaineSportifRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Football"
+                    },
+                    "category_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateDomaineSportifRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Football Modifié"
+                    },
+                    "category_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            3
+                        ]
+                    }
+                },
+                "type": "object"
+            },
             "User": {
                 "properties": {
                     "id": {
@@ -290,13 +1311,209 @@
                     }
                 },
                 "type": "object"
+            },
+            "PlanNutritionnel": {
+                "required": [
+                    "id",
+                    "name",
+                    "description"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Plan de perte de poids"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Un plan nutritionnel conçu pour aider à perdre du poids."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "StorePlanNutritionnelRequest": {
+                "required": [
+                    "name",
+                    "description"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Plan de prise de masse"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Un plan nutritionnel conçu pour aider à prendre de la masse."
+                    }
+                },
+                "type": "object"
+            },
+            "UpdatePlanNutritionnelRequest": {
+                "required": [
+                    "name",
+                    "description"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Plan de perte de poids modifié"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Un plan modifié pour aider à perdre du poids."
+                    }
+                },
+                "type": "object"
+            },
+            "ProgrammeEntrainement": {
+                "required": [
+                    "id",
+                    "title",
+                    "description"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Programme de Force"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Un programme d'entraînement axé sur le développement de la force."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreProgrammeEntrainementRequest": {
+                "required": [
+                    "title",
+                    "description"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Programme d'Endurance"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Un programme d'entraînement conçu pour améliorer l'endurance."
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateProgrammeEntrainementRequest": {
+                "required": [
+                    "title",
+                    "description"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Programme de Force Modifié"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Un programme d'entraînement modifié axé sur le développement de la force."
+                    }
+                },
+                "type": "object"
+            },
+            "SeanceEntrainement": {
+                "properties": {
+                    "nom": {
+                        "type": "string",
+                        "example": "Séance Musculation Matin"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Séance d'entraînement de musculation en matinée."
+                    },
+                    "duree": {
+                        "type": "string",
+                        "example": "1h"
+                    },
+                    "chronometre": {
+                        "type": "string",
+                        "example": "30 minutes"
+                    },
+                    "ordre": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "programme_entrainement_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "date_mise_a_jour": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-09-21T02:48:57Z"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-09-21T02:48:57Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-09-21T02:48:57Z"
+                    }
+                },
+                "type": "object"
             }
         }
     },
     "tags": [
         {
+            "name": "Commentaires",
+            "description": "Opérations liées aux commentaires"
+        },
+        {
+            "name": "Domaines Sportifs",
+            "description": "Opérations liées aux domaines sportifs"
+        },
+        {
             "name": "Auth",
             "description": "Opérations liées à l'authentification JWT"
+        },
+        {
+            "name": "Plans Nutritionnels",
+            "description": "Opérations liées aux plans nutritionnels"
+        },
+        {
+            "name": "Programmes d'Entraînement",
+            "description": "Opérations liées aux programmes d'entraînement"
+        },
+        {
+            "name": "Articles",
+            "description": "Articles"
+        },
+        {
+            "name": "Séances d'Entraînement",
+            "description": "Séances d'Entraînement"
         }
     ]
 }

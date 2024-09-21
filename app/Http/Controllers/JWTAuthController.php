@@ -8,9 +8,63 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
+
+/**
+ * @OA\Tag(name="Auth", description="Opérations liées à l'authentification JWT")
+ * 
+ * @OA\Schema(
+ *     schema="User",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="nom", type="string", example="John"),
+ *     @OA\Property(property="prenom", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
+ *     @OA\Property(property="telephone", type="string", example="123456789"),
+ *     @OA\Property(property="localisation", type="string", example="Dakar, Sénégal"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
+
 class JWTAuthController extends Controller
 {
-    
+
+ /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     tags={"Auth"},
+     *     summary="Enregistrer un nouvel utilisateur",
+     *     description="Créer un nouvel utilisateur dans le système",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nom","prenom","email","mot_de_passe","telephone","localisation"},
+     *             @OA\Property(property="nom", type="string", example="John"),
+     *             @OA\Property(property="prenom", type="string", example="Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
+     *             @OA\Property(property="mot_de_passe", type="string", format="password", example="password123"),
+     *             @OA\Property(property="mot_de_passe_confirmation", type="string", format="password", example="password123"),
+     *             @OA\Property(property="telephone", type="string", example="123456789"),
+     *             @OA\Property(property="localisation", type="string", example="Dakar, Sénégal")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Utilisateur créé avec succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", ref="#/components/schemas/User")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erreur de validation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Données d'entrée invalides")
+     *         )
+     *     )
+     * )
+     */
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
