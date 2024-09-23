@@ -17,6 +17,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\JWTAuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CoachController;
 
 
 // Routes accessibles sans authentification
@@ -24,6 +25,7 @@ Route::post('register', [JWTAuthController::class, 'register']);
 Route::post('login', [JWTAuthController::class, 'login']);
 
 // Routes publiques 
+
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/programme-entrainements', [ProgrammeEntrainementController::class, 'index']);
 Route::get('/domaine-sportifs', [DomaineSportifController::class, 'index']);
@@ -111,4 +113,13 @@ Route::middleware(['auth:api'])->group(function () {
     // Routes pour rôles et permissions
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('permissions', PermissionController::class);
+
+ 
+ 
 });
+Route::get('/coaches', [CoachController::class, 'index']);
+Route::post('/coaches', [CoachController::class, 'store']);
+Route::get('/coaches/{id}', [CoachController::class, 'show']);
+Route::put('/coaches/{id}', [CoachController::class, 'update']);
+Route::delete('/coaches/{id}', [CoachController::class, 'destroy']);
+

@@ -8,9 +8,20 @@ use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @OA\Tag(name="Messages", description="Opérations liées aux messages")
+ */
 class MessageController extends Controller
 {
-    // Affiche la liste des messages de l'utilisateur authentifié
+    /**
+     * @OA\Get(
+     *     path="/api/messages",
+     *     tags={"Messages"},
+     *     summary="Lister tous les messages de l'utilisateur authentifié",
+     *     @OA\Response(response="200", description="Liste des messages"),
+     *     @OA\Response(response="401", description="Utilisateur non authentifié")
+     * )
+     */
     public function index()
     {
         $user = Auth::user();
@@ -30,7 +41,22 @@ class MessageController extends Controller
         ]);
     }
     
-    // Crée un nouveau message associé à l'utilisateur authentifié
+    /**
+     * @OA\Post(
+     *     path="/api/messages",
+     *     tags={"Messages"},
+     *     summary="Créer un nouveau message",
+     *     @OA\RequestBody(required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="content", type="string", example="Contenu du message"),
+     *             @OA\Property(property="title", type="string", example="Titre du message")
+     *         )
+     *     ),
+     *     @OA\Response(response="201", description="Message créé avec succès"),
+     *     @OA\Response(response="401", description="Utilisateur non authentifié"),
+     *     @OA\Response(response="422", description="Données invalides")
+     * )
+     */
     public function store(StoreMessageRequest $request)
     {
         $user = Auth::user();
@@ -43,7 +69,17 @@ class MessageController extends Controller
         ]);
     }
 
-    // Affiche un message spécifique si l'utilisateur est autorisé
+    /**
+     * @OA\Get(
+     *     path="/api/messages/{id}",
+     *     tags={"Messages"},
+     *     summary="Afficher un message spécifique",
+     *     @OA\Parameter(name="id", in="path", required=true, description="ID du message", @OA\Schema(type="integer")),
+     *     @OA\Response(response="200", description="Détails du message"),
+     *     @OA\Response(response="403", description="Accès non autorisé"),
+     *     @OA\Response(response="404", description="Message non trouvé")
+     * )
+     */
     public function show(Message $message)
     {
         $user = Auth::user();
@@ -61,7 +97,24 @@ class MessageController extends Controller
         ]);
     }
 
-    // Met à jour un message spécifique si l'utilisateur est autorisé
+    /**
+     * @OA\Put(
+     *     path="/api/messages/{id}",
+     *     tags={"Messages"},
+     *     summary="Mettre à jour un message spécifique",
+     *     @OA\Parameter(name="id", in="path", required=true, description="ID du message", @OA\Schema(type="integer")),
+     *     @OA\RequestBody(required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="content", type="string", example="Contenu mis à jour du message"),
+     *             @OA\Property(property="title", type="string", example="Titre mis à jour du message")
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Message mis à jour avec succès"),
+     *     @OA\Response(response="403", description="Accès non autorisé"),
+     *     @OA\Response(response="404", description="Message non trouvé"),
+     *     @OA\Response(response="422", description="Données invalides")
+     * )
+     */
     public function update(UpdateMessageRequest $request, Message $message)
     {
         $user = Auth::user();
@@ -82,7 +135,17 @@ class MessageController extends Controller
         ]);
     }
 
-    // Supprime un message spécifique si l'utilisateur est autorisé
+    /**
+     * @OA\Delete(
+     *     path="/api/messages/{id}",
+     *     tags={"Messages"},
+     *     summary="Supprimer un message spécifique",
+     *     @OA\Parameter(name="id", in="path", required=true, description="ID du message", @OA\Schema(type="integer")),
+     *     @OA\Response(response="200", description="Message supprimé avec succès"),
+     *     @OA\Response(response="403", description="Accès non autorisé"),
+     *     @OA\Response(response="404", description="Message non trouvé")
+     * )
+     */
     public function destroy(Message $message)
     {
         $user = Auth::user();

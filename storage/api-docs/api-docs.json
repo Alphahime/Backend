@@ -308,6 +308,287 @@
                 }
             }
         },
+        "/api/coaches": {
+            "get": {
+                "tags": [
+                    "Coaches"
+                ],
+                "summary": "Obtenir tous les coachs",
+                "description": "Retourne une liste de tous les coachs",
+                "operationId": "getAllCoaches",
+                "responses": {
+                    "200": {
+                        "description": "Liste des coachs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Coach"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Coaches"
+                ],
+                "summary": "Créer un nouveau coach",
+                "description": "Créer un nouveau coach avec les informations fournies",
+                "operationId": "storeCoach",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCoachRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Coach créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Coach"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/coaches/{id}": {
+            "get": {
+                "tags": [
+                    "Coaches"
+                ],
+                "summary": "Obtenir les détails d'un coach",
+                "description": "Retourne les détails d'un coach spécifique",
+                "operationId": "getCoachById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du coach",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du coach",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Coach"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Coach non trouvé"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Coaches"
+                ],
+                "summary": "Supprimer un coach",
+                "description": "Supprimer un coach existant",
+                "operationId": "deleteCoach",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du coach",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Coach supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Coach non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/coaching": {
+            "get": {
+                "tags": [
+                    "Coaching"
+                ],
+                "summary": "Lister tous les coachings",
+                "operationId": "51fdca6cacdf2f47c6fd25206d1be2b1",
+                "responses": {
+                    "200": {
+                        "description": "Liste des coachings"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Coaching"
+                ],
+                "summary": "Créer un nouveau coaching",
+                "operationId": "f8c8df08d0dca4d0e07a7826f4a72427",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Coaching en ligne"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description du coaching"
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Coaching créé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/coaching/{id}": {
+            "get": {
+                "tags": [
+                    "Coaching"
+                ],
+                "summary": "Afficher un coaching spécifique",
+                "operationId": "245843c94ae7b95ea696e5ca93a927d7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du coaching",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du coaching"
+                    },
+                    "404": {
+                        "description": "Coaching non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Coaching"
+                ],
+                "summary": "Mettre à jour un coaching spécifique",
+                "operationId": "12c42f3694ee8e75b6f6eaec0c7802cb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du coaching",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Coaching avancé"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description mise à jour du coaching"
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coaching mis à jour avec succès"
+                    },
+                    "404": {
+                        "description": "Coaching non trouvé"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Coaching"
+                ],
+                "summary": "Supprimer un coaching spécifique",
+                "operationId": "f565c41aa4973de432cbc5566e504d0c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du coaching",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Coaching supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Coaching non trouvé"
+                    }
+                }
+            }
+        },
         "/api/commentaires": {
             "get": {
                 "tags": [
@@ -710,6 +991,317 @@
                 }
             }
         },
+        "/api/messages": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Lister tous les messages de l'utilisateur authentifié",
+                "operationId": "9d5effa2cb648df85be0ea9741ffb457",
+                "responses": {
+                    "200": {
+                        "description": "Liste des messages"
+                    },
+                    "401": {
+                        "description": "Utilisateur non authentifié"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Créer un nouveau message",
+                "operationId": "db79bb7bcadfdb708e9f6c38ac928f4a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Contenu du message"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Titre du message"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Message créé avec succès"
+                    },
+                    "401": {
+                        "description": "Utilisateur non authentifié"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/messages/{id}": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Afficher un message spécifique",
+                "operationId": "8938bb52056aef543d340164d37f9562",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du message",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du message"
+                    },
+                    "403": {
+                        "description": "Accès non autorisé"
+                    },
+                    "404": {
+                        "description": "Message non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Mettre à jour un message spécifique",
+                "operationId": "a1b0a345721451dac454c4049d504775",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du message",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Contenu mis à jour du message"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Titre mis à jour du message"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message mis à jour avec succès"
+                    },
+                    "403": {
+                        "description": "Accès non autorisé"
+                    },
+                    "404": {
+                        "description": "Message non trouvé"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Supprimer un message spécifique",
+                "operationId": "2077fda8b81cc2fb355890827a1ea31c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du message",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message supprimé avec succès"
+                    },
+                    "403": {
+                        "description": "Accès non autorisé"
+                    },
+                    "404": {
+                        "description": "Message non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/permissions": {
+            "get": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Lister toutes les permissions",
+                "operationId": "27bb1606a7b293d1d49f57bb94ae71f7",
+                "responses": {
+                    "200": {
+                        "description": "Liste des permissions"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Créer une nouvelle permission",
+                "operationId": "37c918c86b5085b0eb088fa760c7175d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "edit articles"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Permission créée avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/permissions/{id}": {
+            "get": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Afficher une permission spécifique",
+                "operationId": "397983813683c0c602fc1a036992367a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la permission",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de la permission"
+                    },
+                    "404": {
+                        "description": "Permission non trouvée"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Mettre à jour une permission spécifique",
+                "operationId": "db11d4d00da3ece5b99187df6f1e86e7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la permission",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "update articles"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Permission mise à jour avec succès"
+                    },
+                    "404": {
+                        "description": "Permission non trouvée"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Supprimer une permission spécifique",
+                "operationId": "f0afbd22579524a5bb83b653f7dd18dc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la permission",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Permission supprimée avec succès"
+                    },
+                    "404": {
+                        "description": "Permission non trouvée"
+                    }
+                }
+            }
+        },
         "/api/plans-nutritionnels": {
             "get": {
                 "tags": [
@@ -1012,6 +1604,330 @@
                 }
             }
         },
+        "/api/ressources": {
+            "get": {
+                "tags": [
+                    "Ressources"
+                ],
+                "summary": "Lister toutes les ressources",
+                "operationId": "fba8900842596dbe1f7ae329a459ec46",
+                "responses": {
+                    "200": {
+                        "description": "Liste des ressources"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Ressources"
+                ],
+                "summary": "Créer une nouvelle ressource",
+                "operationId": "b5ce7aeb797c23b953b0c1470a5752f5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type_ressource": {
+                                        "type": "string",
+                                        "example": "Article"
+                                    },
+                                    "titre": {
+                                        "type": "string",
+                                        "example": "Titre de la ressource"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description de la ressource"
+                                    },
+                                    "lien": {
+                                        "type": "string",
+                                        "example": "http://example.com"
+                                    },
+                                    "domaine_sportif_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ressource créée avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/ressources/{id}": {
+            "get": {
+                "tags": [
+                    "Ressources"
+                ],
+                "summary": "Afficher une ressource spécifique",
+                "operationId": "935bcdd5d4025ad02b2711c3879ec990",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la ressource",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de la ressource"
+                    },
+                    "404": {
+                        "description": "Ressource non trouvée"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Ressources"
+                ],
+                "summary": "Mettre à jour une ressource",
+                "operationId": "f4071e28cf93f4e768280efd1657abb0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la ressource",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type_ressource": {
+                                        "type": "string",
+                                        "example": "Article"
+                                    },
+                                    "titre": {
+                                        "type": "string",
+                                        "example": "Titre de la ressource"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description de la ressource"
+                                    },
+                                    "lien": {
+                                        "type": "string",
+                                        "example": "http://example.com"
+                                    },
+                                    "domaine_sportif_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ressource mise à jour avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    },
+                    "404": {
+                        "description": "Ressource non trouvée"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Ressources"
+                ],
+                "summary": "Supprimer une ressource",
+                "operationId": "a11e08865299865da3df2ba20eb5907a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la ressource",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ressource supprimée avec succès"
+                    },
+                    "404": {
+                        "description": "Ressource non trouvée"
+                    }
+                }
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Lister tous les rôles",
+                "operationId": "77e3636d8592997ce9d6d27b50857a69",
+                "responses": {
+                    "200": {
+                        "description": "Liste des rôles"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Créer un nouveau rôle",
+                "operationId": "4a563842fbfcad237f63da43065fca3d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rôle créé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/roles/{id}": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Afficher un rôle spécifique",
+                "operationId": "7fb0667a295b7678a30353aa11739683",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du rôle",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du rôle"
+                    },
+                    "404": {
+                        "description": "Rôle non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Mettre à jour un rôle spécifique",
+                "operationId": "786d6990093a8eb3a56931f19a827e43",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du rôle",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Super Admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rôle mis à jour avec succès"
+                    },
+                    "404": {
+                        "description": "Rôle non trouvé"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Supprimer un rôle spécifique",
+                "operationId": "8285c46981c60ad600aa4077307aec04",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du rôle",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Rôle supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Rôle non trouvé"
+                    }
+                }
+            }
+        },
         "/seances": {
             "get": {
                 "tags": [
@@ -1138,6 +2054,126 @@
                     "updated_at": {
                         "type": "string",
                         "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Coach": {
+                "title": "Coach",
+                "required": [
+                    "user_id",
+                    "profil_verifie"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID du coach",
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "description": "ID de l'utilisateur associé",
+                        "type": "integer"
+                    },
+                    "profil_verifie": {
+                        "description": "Statut de vérification du profil",
+                        "type": "boolean"
+                    },
+                    "experience": {
+                        "description": "Détails de l'expérience du coach",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Description du coach",
+                        "type": "string"
+                    },
+                    "lieu": {
+                        "description": "Lieu du coach",
+                        "type": "string"
+                    },
+                    "services": {
+                        "description": "Services offerts par le coach",
+                        "type": "object",
+                        "example": {
+                            "coaching": "Développement personnel",
+                            "mentorat": "Entrepreneuriat"
+                        }
+                    },
+                    "galerie_photos": {
+                        "description": "Galerie de photos du coach",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "url"
+                        }
+                    },
+                    "diplomes": {
+                        "description": "Diplômes ou certifications du coach",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "disponibilites": {
+                        "description": "Disponibilités du coach",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateCoachRequest": {
+                "title": "UpdateCoachRequest",
+                "required": [
+                    "user_id",
+                    "profil_verifie"
+                ],
+                "properties": {
+                    "user_id": {
+                        "description": "ID de l'utilisateur associé",
+                        "type": "integer"
+                    },
+                    "profil_verifie": {
+                        "description": "Statut de vérification du profil",
+                        "type": "boolean"
+                    },
+                    "experience": {
+                        "description": "Détails de l'expérience du coach",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Description du coach",
+                        "type": "string"
+                    },
+                    "lieu": {
+                        "description": "Lieu du coach",
+                        "type": "string"
+                    },
+                    "services": {
+                        "description": "Services offerts par le coach",
+                        "type": "object"
+                    },
+                    "galerie_photos": {
+                        "description": "Galerie de photos du coach",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "url"
+                        }
+                    },
+                    "diplomes": {
+                        "description": "Diplômes ou certifications du coach",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "disponibilites": {
+                        "description": "Disponibilités du coach",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "type": "object"
@@ -1483,10 +2519,37 @@
                     }
                 },
                 "type": "object"
+            },
+            "StoreCoachRequest": {
+                "title": "Store Coach Request",
+                "description": "Request body for creating a new coach",
+                "required": [
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "Name of the coach",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email of the coach",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "description": "Phone number of the coach",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
             }
         }
     },
     "tags": [
+        {
+            "name": "Coaching",
+            "description": "Opérations liées au coaching"
+        },
         {
             "name": "Commentaires",
             "description": "Opérations liées aux commentaires"
@@ -1500,6 +2563,14 @@
             "description": "Opérations liées à l'authentification JWT"
         },
         {
+            "name": "Messages",
+            "description": "Opérations liées aux messages"
+        },
+        {
+            "name": "Permissions",
+            "description": "Opérations liées aux permissions"
+        },
+        {
             "name": "Plans Nutritionnels",
             "description": "Opérations liées aux plans nutritionnels"
         },
@@ -1508,8 +2579,20 @@
             "description": "Opérations liées aux programmes d'entraînement"
         },
         {
+            "name": "Ressources",
+            "description": "Opérations liées aux ressources"
+        },
+        {
+            "name": "Roles",
+            "description": "Opérations liées aux rôles"
+        },
+        {
             "name": "Articles",
             "description": "Articles"
+        },
+        {
+            "name": "Coaches",
+            "description": "Coaches"
         },
         {
             "name": "Séances d'Entraînement",
