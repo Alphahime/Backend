@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PlanNutritionnel extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'nom',
         'description',
@@ -16,6 +15,10 @@ class PlanNutritionnel extends Model
         'calories_totale',
         'date_creation',
         'date_mise_a_jour',
+        'ingredients', 
+        'etapes', 
+        'image', 
     ];
+    
 }
 

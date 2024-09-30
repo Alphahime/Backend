@@ -62,12 +62,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('categories/{categorie}', [CategorieController::class, 'update']);
     Route::delete('categories/{categorie}', [CategorieController::class, 'destroy']);
 
-    // Routes Plans Nutritionnels
-    Route::post('plans-nutritionnels', [PlanNutritionnelController::class, 'store']);
-    Route::get('plans-nutritionnels/{planNutritionnel}', [PlanNutritionnelController::class, 'show']);
-    Route::put('plans-nutritionnels/{planNutritionnel}', [PlanNutritionnelController::class, 'update']);
-    Route::delete('plans-nutritionnels/{planNutritionnel}', [PlanNutritionnelController::class, 'destroy']);
-
+  
     // Routes Suivi Seances
     Route::post('suivi-seances', [SuiviSeanceController::class, 'store']);
     Route::get('suivi-seances/{suiviSeance}', [SuiviSeanceController::class, 'show']);
@@ -123,3 +118,8 @@ Route::get('/coaches/{id}', [CoachController::class, 'show']);
 Route::put('/coaches/{id}', [CoachController::class, 'update']);
 Route::delete('/coaches/{id}', [CoachController::class, 'destroy']);
 
+ // Routes Plans Nutritionnels
+ Route::post('plans-nutritionnels', [PlanNutritionnelController::class, 'store']);
+ Route::get('plans-nutritionnels/{planNutritionnel}', [PlanNutritionnelController::class, 'show']);
+ Route::put('plans-nutritionnels/{planNutritionnel}', [PlanNutritionnelController::class, 'update']);
+ Route::delete('plans-nutritionnels/{planNutritionnel}', [PlanNutritionnelController::class, 'destroy']);

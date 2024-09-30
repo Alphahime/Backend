@@ -19,9 +19,9 @@ class CreateProgrammeEntrainementsTable extends Migration
             $table->timestamp('date_creation')->nullable();
             $table->timestamp('date_mise_a_jour')->nullable();
             $table->timestamps();
-            $table->string('niveau_difficulte')->nullable(); // Ajouté
-            $table->string('status')->default('inactive'); // Ajouté
-            $table->string('type_programme')->nullable(); // Ajouté
+            $table->string('niveau_difficulte')->nullable(); 
+            $table->string('status')->default('inactive'); 
+            $table->string('type_programme')->nullable();
         });
     }
 

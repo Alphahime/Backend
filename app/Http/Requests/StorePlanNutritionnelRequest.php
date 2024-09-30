@@ -15,13 +15,17 @@ class StorePlanNutritionnelRequest extends FormRequest
     {
         return [
             'nom' => 'required|string|max:255',
-            'description' => 'required|string|max:1000', // Limite la longueur de la description
-            'type_alimentation' => 'required|string|max:255', // Correctement nommer le champ 'type_alimentation'
-            'calories_totale' => 'required|string|max:255', // Ajuster le type si c'est une chaîne de caractères
-            'date_creation' => 'nullable|date',
-            'date_mise_a_jour' => 'nullable|date',
+            'description' => 'required|string|max:1000',
+            'type_alimentation' => 'required|string|max:255',
+            'calories_totale' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'ingredient' => 'required|array', // Changer de string à array
+            'ingredient.*' => 'string|max:255', // Validation pour chaque élément de l'array
+            'etape_a_suivre' => 'required|array', // Changer de string à array
+            'etape_a_suivre.*' => 'string|max:255', // Validation pour chaque élément de l'array
         ];
     }
+    
 
     public function messages()
     {

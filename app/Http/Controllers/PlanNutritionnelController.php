@@ -75,12 +75,33 @@ class PlanNutritionnelController extends Controller
      */
     public function store(StorePlanNutritionnelRequest $request)
     {
-        $plan = PlanNutritionnel::create($request->validated());
+        // Validation des données
+        $validatedData = $request->validated();
+    
+        // Gestion de l'upload d'image
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('plans_images', 'public');
+            $validatedData['image'] = $imagePath; // Stocker le chemin de l'image
+        }
+    
+        // Créer le plan nutritionnel
+        $plan = PlanNutritionnel::create([
+            'nom' => $validatedData['nom'],
+            'description' => $validatedData['description'],
+            'type_alimentation' => $validatedData['type_alimentation'],
+            'calories_totale' => $validatedData['calories_totale'],
+            'image' => $validatedData['image'] ?? null,
+            'ingredient' => json_encode($validatedData['ingredient']), // Encoder en JSON
+            'etape_a_suivre' => json_encode($validatedData['etape_a_suivre']), // Encoder en JSON
+            'date_creation' => now(),
+        ]);
+    
         return response()->json([
             'message' => 'Plan Nutritionnel créé avec succès.',
             'plan' => $plan
         ], 201);
     }
+    
 
     /**
      * @OA\Get(
@@ -96,11 +117,18 @@ class PlanNutritionnelController extends Controller
      *     @OA\Response(response=404, description="Plan nutritionnel non trouvé.")
      * )
      */
-    public function show(PlanNutritionnel $plan)
+    public function show($id)
     {
-        return response()->json($plan, 200); // Renvoyer les détails du plan sous format JSON
+        $recette = PlanNutritionnel::find($id);
+    
+        if (!$recette) {
+            return response()->json(['message' => 'Recette not found'], 404);
+        }
+    
+        return response()->json($recette);
     }
-
+    
+    
     /**
      * @OA\Put(
      *     path="/api/plans-nutritionnels/{id}",
@@ -118,15 +146,35 @@ class PlanNutritionnelController extends Controller
      *     )
      * )
      */
-    public function update(UpdatePlanNutritionnelRequest $request, PlanNutritionnel $plan)
-    {
-        $plan->update($request->validated());
     
-        return response()->json([
-            'message' => 'Plan nutritionnel mis à jour avec succès.',
-            'plan' => $plan
-        ], 200);
+public function update(UpdatePlanNutritionnelRequest $request, PlanNutritionnel $plan)
+{
+    // Validation des données
+    $validatedData = $request->validated();
+
+    // Gestion de l'upload d'image si une nouvelle image est fournie
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('plans_images', 'public');
+        $validatedData['image'] = $imagePath; 
     }
+
+    // Mise à jour du plan nutritionnel
+    $plan->update([
+        'nom' => $validatedData['nom'],
+        'description' => $validatedData['description'],
+        'type_alimentation' => $validatedData['type_alimentation'],
+        'calories_totale' => $validatedData['calories_totale'],
+        'image' => $validatedData['image'] ?? $plan->image, 
+        'ingredient' => json_decode($validatedData['ingredient']),
+        'etape_a_suivre' => json_decode($validatedData['etape_a_suivre']), 
+        'date_mise_a_jour' => now(),
+    ]);
+
+    return response()->json([
+        'message' => 'Plan nutritionnel mis à jour avec succès.',
+        'plan' => $plan
+    ], 200);
+}
     
     /**
      * @OA\Delete(
@@ -143,9 +191,15 @@ class PlanNutritionnelController extends Controller
      */
     public function destroy(PlanNutritionnel $plan)
     {
+        if (!$plan) {
+            return response()->json(['message' => 'Plan nutritionnel non trouvé.'], 404);
+        }
+    
         $plan->delete();
         return response()->json([
             'message' => 'Plan Nutritionnel supprimé avec succès.'
-        ], 200); // Renvoyer une réponse JSON pour confirmer la suppression
+        ], 200);
     }
+    
+    
 }
