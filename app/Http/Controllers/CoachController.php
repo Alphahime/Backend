@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreCoachRequest;
 use App\Http\Requests\UpdateCoachRequest;
+use Illuminate\Support\Str;
+use App\Models\User;
 
 /**
  * @OA\Tag(
@@ -278,33 +280,51 @@ class CoachController extends Controller
     }
 
 
+   
+
     public function acceptCoach($id) {
         // Récupérer le coach avec l'ID donné
         $coach = Coach::find($id);
-    
+        
         // Vérifier si le coach existe
-        if ($coach) {
-            // Créer un utilisateur pour le coach
-            $user = User::create([
-                'name' => $coach->name,
-                'email' => $coach->email,
-                'password' => Hash::make('password_temporaire'), // Vous pouvez générer un mot de passe aléatoire
-            ]);
-    
-            // Assigner un rôle de coach à cet utilisateur (si vous utilisez des rôles)
-            $user->assignRole('coach');
-    
-           
-            $coach->status = 'accepted';
-            $coach->save();
-    
-           
-            Mail::to($coach->email)->send(new CoachAcceptedMail($user));
-    
-            return response()->json(['message' => 'Coach accepté et accès générés avec succès']);
-        } else {
+        if (!$coach) {
             return response()->json(['message' => 'Coach non trouvé'], 404);
         }
+    
+        // Récupérer l'utilisateur associé au coach
+        $user = User::find($coach->user_id);
+    
+        // Vérifier si l'utilisateur a un email valide
+        if (!$user || !$user->email) {
+            return response()->json(['error' => 'Le coach n\'a pas d\'email.'], 400);
+        }
+    
+        // Générer un mot de passe temporaire aléatoire
+        $temporaryPassword = Str::random(10);
+    
+        // Créer un utilisateur si nécessaire
+        if (!$user) {
+            $user = User::create([
+                'name' => $coach->name,  // Assurez-vous que le nom du coach est renseigné
+                'email' => $coach->email,
+                'password' => Hash::make($temporaryPassword),  // Génération du mot de passe sécurisé
+            ]);
+        }
+    
+        // Assigner un rôle de coach à cet utilisateur (si vous utilisez des rôles)
+        $user->assignRole('coach');
+    
+        // Mise à jour du statut du coach à "accepté"
+        $coach->status = 'accepted';
+        $coach->save();
+    
+        // Envoyer l'email au coach avec les accès générés
+        Mail::to($user->email)->send(new CoachAcceptedMail($user, $temporaryPassword));
+    
+        return response()->json(['message' => 'Coach accepté et accès générés avec succès']);
     }
+    
+    
+    
     
 }

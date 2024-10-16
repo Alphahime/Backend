@@ -11,15 +11,17 @@ class CoachAcceptedMail extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $temporaryPassword;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($user, $temporaryPassword)
     {
         $this->user = $user;
+        $this->temporaryPassword = $temporaryPassword;
     }
 
     /**
@@ -33,7 +35,7 @@ class CoachAcceptedMail extends Mailable
                     ->with([
                         'name' => $this->user->name,
                         'email' => $this->user->email,
-                        'password' => 'password_temporaire',  // Vous pouvez remplacer par un mot de passe généré dynamiquement
+                        'password' => $this->temporaryPassword,  // Mot de passe dynamique
                     ]);
     }
 }

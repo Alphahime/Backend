@@ -7,7 +7,7 @@
     <h1>Bienvenue, {{ $name }}</h1>
     <p>Vous avez été accepté en tant que coach. Vous pouvez accéder à votre dashboard avec les identifiants suivants :</p>
     <p>Email : {{ $email }}</p>
-    <p>Mot de passe temporaire : password_temporaire</p>
+    <p>Mot de passe temporaire : {{ $password }}</p>  <!-- Mot de passe dynamique -->
     <p><a href="{{ url('/login') }}">Cliquez ici pour vous connecter</a></p>
 </body>
 </html>

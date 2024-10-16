@@ -139,6 +139,7 @@ Route::delete('/commentaires/{commentaire}', [CommentaireController::class, 'des
 
     
     Route::post('/accept-coach/{id}', [CoachController::class, 'acceptCoach']);
+    Route::put('/coaches/accept-coach/{id}', [CoachController::class, 'acceptCoach']);
 
     Route::get('/reservations', [ReservationController::class, 'index']);
     
