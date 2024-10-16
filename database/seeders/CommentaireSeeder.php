@@ -13,7 +13,7 @@ class CommentaireSeeder extends Seeder
 {
     public function run()
     {
-        // Vérifie s'il y a des utilisateurs dans la base de données
+       
         $userCount = User::count();
 
         if ($userCount === 0) {
@@ -25,7 +25,7 @@ class CommentaireSeeder extends Seeder
                 'mot_de_passe' => bcrypt('password'),
                 'telephone' => '123456789',
                 'localisation' => 'Dakar, Sénégal',
-                'photo_profil' => null, // Met à null s'il n'y a pas de photo
+                'photo_profil' => null, 
             ]);
         } else {
             // Récupère un utilisateur aléatoire existant
@@ -38,9 +38,9 @@ class CommentaireSeeder extends Seeder
         if ($articleCount === 0) {
             // Crée un article par défaut si aucun n'existe
             $article = Article::create([
-                'nom' => 'Article Test', // Change 'titre' en 'nom'
+                'nom' => 'Article Test',
                 'description' => 'Contenu de test pour l\'article.',
-                'type_article' => 'test', // Ajoute des champs supplémentaires si nécessaire
+                'type_article' => 'test',
             ]);
         } else {
             // Récupère un article aléatoire existant

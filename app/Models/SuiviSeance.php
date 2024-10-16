@@ -11,8 +11,21 @@ class SuiviSeance extends Model
 
     protected $guarded = [];
 
+    // Relation avec SeanceEntrainement
     public function seanceEntrainement()
     {
         return $this->belongsTo(SeanceEntrainement::class);
+    }
+
+    // Relation avec ProgrammeEntrainement
+    public function programmeEntrainement()
+    {
+        return $this->belongsTo(ProgrammeEntrainement::class);
+    }
+
+    // Relation avec l'utilisateur
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

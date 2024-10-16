@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Spatie\Permission\Traits\HasRoles; // Ajoute cette ligne
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory;
+    use HasFactory, HasRoles; // Ajoute HasRoles ici
 
     /**
      * Les attributs qui ne sont pas mass-assignable.
@@ -93,20 +94,15 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Message::class);
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
-
     public function commentaires()
     {
         return $this->hasMany(Commentaire::class);
     }
 
+    // Ne pas inclure la méthode roles() ici car elle est gérée par le trait HasRoles
+
     public function setPasswordAttribute($value)
-{
-    $this->attributes['password'] = bcrypt($value);
+    {
+        $this->attributes['mot_de_passe'] = bcrypt($value);
+    }
 }
-
-}
-

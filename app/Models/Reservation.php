@@ -5,10 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
-    protected $fillable = [
-        'client_id', 'coach_id', 'date_seance', 'status',
-        // autres attributs
-    ];
+    protected $guarded = [];
 
     public function client()
     {

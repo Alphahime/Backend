@@ -9,9 +9,9 @@ class AddIngredientsEtapesImageToPlanNutritionnelsTable extends Migration
     public function up()
     {
         Schema::table('plan_nutritionnels', function (Blueprint $table) {
-            $table->json('ingredients')->nullable(); // New field for ingredients
-            $table->json('etapes')->nullable(); // New field for etapes
-            $table->string('image')->nullable(); // New field for image
+            $table->json('ingredients')->nullable(); 
+            $table->json('etapes')->nullable();
+            $table->string('image')->nullable(); 
         });
     }
 

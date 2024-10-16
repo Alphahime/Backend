@@ -15,18 +15,18 @@ class StorePlanNutritionnelRequest extends FormRequest
     {
         return [
             'nom' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
+            'description' => 'required|string',
             'type_alimentation' => 'required|string|max:255',
-            'calories_totale' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'ingredient' => 'required|array', // Changer de string à array
-            'ingredient.*' => 'string|max:255', // Validation pour chaque élément de l'array
-            'etape_a_suivre' => 'required|array', // Changer de string à array
-            'etape_a_suivre.*' => 'string|max:255', // Validation pour chaque élément de l'array
+            'calories_totale' => 'required|integer',
+            'image' => 'nullable|image|max:2048', 
+            'ingredients' => 'required|json',
+            'etapes' => 'required|json',
+            '
         ];
     }
     
-
+    
+    
     public function messages()
     {
         return [
@@ -34,7 +34,11 @@ class StorePlanNutritionnelRequest extends FormRequest
             'description.required' => 'La description du plan est requise.',
             'type_alimentation.required' => 'Le type d\'alimentation est requis.',
             'calories_totale.required' => 'Les calories totales sont requises.',
-            'calories_totale.string' => 'Les calories doivent être une chaîne de caractères valide.',
+            'calories_totale.numeric' => 'Les calories doivent être un nombre valide.',
+            'image.mimes' => 'L\'image doit être au format jpg, jpeg ou png.',
+            'image.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+            'ingredient.required' => 'Au moins un ingrédient est requis.',
+            'etape_a_suivre.required' => 'Au moins une étape est requise.',
         ];
     }
 }

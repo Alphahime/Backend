@@ -13,28 +13,43 @@ use App\Http\Requests\UpdatePlanNutritionnelRequest;
  * @OA\Schema(
  *     schema="PlanNutritionnel",
  *     type="object",
- *     required={"id", "name", "description"},
+ *     required={"id", "nom", "description"},
  *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="Plan de perte de poids"),
+ *     @OA\Property(property="nom", type="string", example="Plan de perte de poids"),
  *     @OA\Property(property="description", type="string", example="Un plan nutritionnel conçu pour aider à perdre du poids."),
+ *     @OA\Property(property="type_alimentation", type="string", example="Régime"),
+ *     @OA\Property(property="calories_totale", type="string", example="1500 kcal"),
  *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time")
+ *     @OA\Property(property="updated_at", type="string", format="date-time"),
+ *     @OA\Property(property="ingredients", type="array", @OA\Items(type="string")),
+ *     @OA\Property(property="etapes", type="array", @OA\Items(type="string")),
+ *     @OA\Property(property="image", type="string", example="URL de l'image")
  * )
  *
  * @OA\Schema(
  *     schema="StorePlanNutritionnelRequest",
  *     type="object",
- *     required={"name", "description"},
- *     @OA\Property(property="name", type="string", example="Plan de prise de masse"),
- *     @OA\Property(property="description", type="string", example="Un plan nutritionnel conçu pour aider à prendre de la masse.")
+ *     required={"nom", "description", "type_alimentation", "calories_totale", "ingredients", "etapes"},
+ *     @OA\Property(property="nom", type="string", example="Plan de prise de masse"),
+ *     @OA\Property(property="description", type="string", example="Un plan nutritionnel conçu pour aider à prendre de la masse."),
+ *     @OA\Property(property="type_alimentation", type="string", example="Régime"),
+ *     @OA\Property(property="calories_totale", type="string", example="2000 kcal"),
+ *     @OA\Property(property="image", type="string", example="URL de l'image"),
+ *     @OA\Property(property="ingredients", type="array", @OA\Items(type="string")),
+ *     @OA\Property(property="etapes", type="array", @OA\Items(type="string"))
  * )
  *
  * @OA\Schema(
  *     schema="UpdatePlanNutritionnelRequest",
  *     type="object",
- *     required={"name", "description"},
- *     @OA\Property(property="name", type="string", example="Plan de perte de poids modifié"),
- *     @OA\Property(property="description", type="string", example="Un plan modifié pour aider à perdre du poids.")
+ *     required={"nom", "description"},
+ *     @OA\Property(property="nom", type="string", example="Plan de perte de poids modifié"),
+ *     @OA\Property(property="description", type="string", example="Un plan modifié pour aider à perdre du poids."),
+ *     @OA\Property(property="type_alimentation", type="string", example="Régime"),
+ *     @OA\Property(property="calories_totale", type="string", example="1500 kcal"),
+ *     @OA\Property(property="image", type="string", example="URL de l'image"),
+ *     @OA\Property(property="ingredients", type="array", @OA\Items(type="string")),
+ *     @OA\Property(property="etapes", type="array", @OA\Items(type="string"))
  * )
  */
 class PlanNutritionnelController extends Controller
@@ -54,6 +69,13 @@ class PlanNutritionnelController extends Controller
     public function index()
     {
         $plans = PlanNutritionnel::all();
+        
+        // Décoder les ingrédients et étapes
+        foreach ($plans as $plan) {
+            $plan->ingredients = json_decode($plan->ingredients, true);
+            $plan->etapes = json_decode($plan->etapes, true);
+        }
+
         return response()->json($plans, 200); // Renvoyer la liste des plans sous format JSON
     }
 
@@ -73,35 +95,51 @@ class PlanNutritionnelController extends Controller
      *     )
      * )
      */
-    public function store(StorePlanNutritionnelRequest $request)
-    {
-        // Validation des données
-        $validatedData = $request->validated();
-    
-        // Gestion de l'upload d'image
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('plans_images', 'public');
-            $validatedData['image'] = $imagePath; // Stocker le chemin de l'image
-        }
-    
-        // Créer le plan nutritionnel
-        $plan = PlanNutritionnel::create([
-            'nom' => $validatedData['nom'],
-            'description' => $validatedData['description'],
-            'type_alimentation' => $validatedData['type_alimentation'],
-            'calories_totale' => $validatedData['calories_totale'],
-            'image' => $validatedData['image'] ?? null,
-            'ingredient' => json_encode($validatedData['ingredient']), // Encoder en JSON
-            'etape_a_suivre' => json_encode($validatedData['etape_a_suivre']), // Encoder en JSON
-            'date_creation' => now(),
-        ]);
-    
-        return response()->json([
-            'message' => 'Plan Nutritionnel créé avec succès.',
-            'plan' => $plan
-        ], 201);
+    public function store(Request $request)
+{
+    // Validate the incoming request
+    $request->validate([
+        'nom' => 'required|string|max:255',
+        'description' => 'required|string',
+        'type_alimentation' => 'required|string|max:255',
+        'calories_totale' => 'required|string|max:255',
+        'ingredients' => 'required|json',
+        'etapes' => 'required|json',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    // Create the plan nutritionnel
+    $recette = new PlanNutritionnel();
+    $recette->nom = $request->nom;
+    $recette->description = $request->description;
+    $recette->type_alimentation = $request->type_alimentation;
+    $recette->calories_totale = $request->calories_totale;
+    $recette->ingredients = json_encode($request->ingredients);
+    $recette->etapes = json_encode($request->etapes);
+
+    // Handle image upload
+    if ($request->hasFile('image')) {
+        $recette->image = $this->uploadImage($request->file('image'));
     }
-    
+
+    $recette->save();
+
+    return response()->json(['message' => 'Recette ajoutée avec succès', 'recette' => $recette], 201);
+}
+
+
+    /**
+     * Upload l'image et retourne le chemin
+     */
+    private function uploadImage($image)
+    {
+        if ($image) {
+            
+            $path = $image->store('images', 'public'); 
+            return '/storage/' . $path; 
+        }
+        return null; 
+    }
 
     /**
      * @OA\Get(
@@ -119,21 +157,24 @@ class PlanNutritionnelController extends Controller
      */
     public function show($id)
     {
-        $recette = PlanNutritionnel::find($id);
+        $plan = PlanNutritionnel::find($id);
     
-        if (!$recette) {
-            return response()->json(['message' => 'Recette not found'], 404);
+        if (!$plan) {
+            return response()->json(['message' => 'Plan nutritionnel non trouvé.'], 404);
         }
     
-        return response()->json($recette);
+        // Décoder les ingrédients et étapes
+        $plan->ingredients = json_decode($plan->ingredients, true);
+        $plan->etapes = json_decode($plan->etapes, true);
+    
+        return response()->json($plan, 200);
     }
-    
-    
+
     /**
      * @OA\Put(
      *     path="/api/plans-nutritionnels/{id}",
      *     tags={"Plans Nutritionnels"},
-     *     summary="Mettre à jour un plan nutritionnel",
+     *     summary="Mettre à jour un plan nutritionnel existant",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\RequestBody(
      *         required=true,
@@ -143,31 +184,31 @@ class PlanNutritionnelController extends Controller
      *         response=200,
      *         description="Plan nutritionnel mis à jour avec succès.",
      *         @OA\JsonContent(ref="#/components/schemas/PlanNutritionnel")
-     *     )
+     *     ),
+     *     @OA\Response(response=404, description="Plan nutritionnel non trouvé.")
      * )
      */
-    
-public function update(UpdatePlanNutritionnelRequest $request, PlanNutritionnel $plan)
+    public function update(UpdatePlanNutritionnelRequest $request, $id)
 {
+    $plan = PlanNutritionnel::find($id);
+
+    if (!$plan) {
+        return response()->json(['message' => 'Plan nutritionnel non trouvé.'], 404);
+    }
+
     // Validation des données
     $validatedData = $request->validated();
 
-    // Gestion de l'upload d'image si une nouvelle image est fournie
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('plans_images', 'public');
-        $validatedData['image'] = $imagePath; 
-    }
-
-    // Mise à jour du plan nutritionnel
+    // Mettre à jour le plan nutritionnel
     $plan->update([
         'nom' => $validatedData['nom'],
         'description' => $validatedData['description'],
         'type_alimentation' => $validatedData['type_alimentation'],
         'calories_totale' => $validatedData['calories_totale'],
-        'image' => $validatedData['image'] ?? $plan->image, 
-        'ingredient' => json_decode($validatedData['ingredient']),
-        'etape_a_suivre' => json_decode($validatedData['etape_a_suivre']), 
-        'date_mise_a_jour' => now(),
+        'image' => $this->uploadImage($request->file('image')) ?? $plan->image, // Mettre à jour l'image ou garder l'ancienne
+        'ingredients' => json_encode($validatedData['ingredients']),
+        'etapes' => json_encode($validatedData['etapes']),
+        'date_creation' => now(),
     ]);
 
     return response()->json([
@@ -175,7 +216,8 @@ public function update(UpdatePlanNutritionnelRequest $request, PlanNutritionnel 
         'plan' => $plan
     ], 200);
 }
-    
+
+
     /**
      * @OA\Delete(
      *     path="/api/plans-nutritionnels/{id}",
@@ -183,23 +225,22 @@ public function update(UpdatePlanNutritionnelRequest $request, PlanNutritionnel 
      *     summary="Supprimer un plan nutritionnel",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\Response(
-     *         response=200,
+     *         response=204,
      *         description="Plan nutritionnel supprimé avec succès."
      *     ),
      *     @OA\Response(response=404, description="Plan nutritionnel non trouvé.")
      * )
      */
-    public function destroy(PlanNutritionnel $plan)
+    public function destroy($id)
     {
+        $plan = PlanNutritionnel::find($id);
+    
         if (!$plan) {
             return response()->json(['message' => 'Plan nutritionnel non trouvé.'], 404);
         }
     
         $plan->delete();
-        return response()->json([
-            'message' => 'Plan Nutritionnel supprimé avec succès.'
-        ], 200);
+    
+        return response()->json(null, 204);
     }
-    
-    
 }

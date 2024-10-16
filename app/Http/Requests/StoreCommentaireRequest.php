@@ -14,8 +14,7 @@ class StoreCommentaireRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contenu' => 'required|string',
-            'user_id' => 'required|exists:users,id',
+            'contenu' => 'required|string',  
             'article_id' => 'required|exists:articles,id',
             'blog_id' => 'required|exists:blogs,id',
         ];

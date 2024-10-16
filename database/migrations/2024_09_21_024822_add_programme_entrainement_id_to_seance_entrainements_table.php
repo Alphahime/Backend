@@ -9,7 +9,7 @@ class AddProgrammeEntrainementIdToSeanceEntrainementsTable extends Migration
     public function up()
     {
         Schema::table('seance_entrainements', function (Blueprint $table) {
-            $table->unsignedBigInteger('programme_entrainement_id')->nullable(); // Ajoute la colonne
+            $table->unsignedBigInteger('programme_entrainement_id')->nullable(); 
             $table->foreign('programme_entrainement_id')->references('id')->on('programme_entrainements')->onDelete('cascade'); // Si nécessaire, crée la clé étrangère
         });
     }

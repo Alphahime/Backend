@@ -23,6 +23,7 @@ class UpdateProgrammeEntrainementRequest extends FormRequest
             'status' => 'required|in:actif,inactif',
             'date_creation' => 'nullable|date',
             'date_mise_a_jour' => 'nullable|date',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation for image upload
         ];
     }
 }

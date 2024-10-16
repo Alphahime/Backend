@@ -9,10 +9,20 @@ class SeanceEntrainement extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    // Utilisation de $fillable pour définir les champs assignables en masse
+    protected $fillable = [
+        'nom',
+        'description',
+        'duree',
+        'chronometre',
+        'ordre',
+        'date_mise_a_jour',
+        'programme_entrainement_id',
+    ];
 
-    public function programmeEntrainement()
+    // Relation avec le programme d'entraînement
+    public function programme()
     {
-        return $this->belongsTo(ProgrammeEntrainement::class);
+        return $this->belongsTo(ProgrammeEntrainement::class, 'programme_entrainement_id');
     }
 }

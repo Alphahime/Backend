@@ -52,40 +52,42 @@ class SeanceEntrainementController extends Controller
      */
     public function store(StoreSeanceEntrainementRequest $request)
     {
+        // Créez la séance en incluant le programme d'entraînement ID
         $seance = SeanceEntrainement::create($request->validated());
         return response()->json($seance, 201); // Retourne la nouvelle séance créée
     }
 
-   /**
- * @OA\Put(
- *     path="/seances/{id}",
- *     tags={"Séances d'Entraînement"},
- *     summary="Mettre à jour une séance d'entraînement",
- *     @OA\Parameter(name="id", in="path", required=true, description="ID de la séance d'entraînement", @OA\Schema(type="integer")),
- *     @OA\RequestBody(required=true,
- *         @OA\JsonContent(ref="#/components/schemas/SeanceEntrainement")
- *     ),
- *     @OA\Response(response="200", description="Séance d'entraînement mise à jour avec succès")
- * )
- */
-public function update(UpdateSeanceEntrainementRequest $request, SeanceEntrainement $seance)
-{
-    $seance->update($request->validated());
-    return response()->json($seance); // Retourne la séance mise à jour
-}
+    /**
+     * @OA\Put(
+     *     path="/seances/{id}",
+     *     tags={"Séances d'Entraînement"},
+     *     summary="Mettre à jour une séance d'entraînement",
+     *     @OA\Parameter(name="id", in="path", required=true, description="ID de la séance d'entraînement", @OA\Schema(type="integer")),
+     *     @OA\RequestBody(required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/SeanceEntrainement")
+     *     ),
+     *     @OA\Response(response="200", description="Séance d'entraînement mise à jour avec succès")
+     * )
+     */
+    public function update(UpdateSeanceEntrainementRequest $request, SeanceEntrainement $seance)
+    {
+        // Met à jour la séance avec les données validées
+        $seance->update($request->validated());
+        return response()->json($seance); // Retourne la séance mise à jour
+    }
 
-/**
- * @OA\Delete(
- *     path="/seances/{id}",
- *     tags={"Séances d'Entraînement"},
- *     summary="Supprimer une séance d'entraînement",
- *     @OA\Parameter(name="id", in="path", required=true, description="ID de la séance d'entraînement", @OA\Schema(type="integer")),
- *     @OA\Response(response="200", description="Séance d'entraînement supprimée avec succès")
- * )
- */
-public function destroy(SeanceEntrainement $seance)
-{
-    $seance->delete();
-    return response()->json(['message' => 'Séance d\'Entrainement supprimée avec succès.']); // Retourne un message de succès
-}
+    /**
+     * @OA\Delete(
+     *     path="/seances/{id}",
+     *     tags={"Séances d'Entraînement"},
+     *     summary="Supprimer une séance d'entraînement",
+     *     @OA\Parameter(name="id", in="path", required=true, description="ID de la séance d'entraînement", @OA\Schema(type="integer")),
+     *     @OA\Response(response="200", description="Séance d'entraînement supprimée avec succès")
+     * )
+     */
+    public function destroy(SeanceEntrainement $seance)
+    {
+        $seance->delete();
+        return response()->json(['message' => 'Séance d\'Entrainement supprimée avec succès.']); // Retourne un message de succès
+    }
 }

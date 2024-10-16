@@ -4,44 +4,30 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
 
 class DomaineSportifSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        $user = DB::table('users')->first();
-        if (!$user) {
-            $this->command->error('No users found in the database. Please add a user first.');
-            return;
-        }
-
-        $userId = $user->id;
-
         $domaines = [
             [
                 'nom' => 'Musculation',
-                'description' => 'Entraînement axé sur le renforcement musculaire et la croissance des muscles.',
-                'date_creation' => Carbon::now(),
-                'date_mise_a_jour' => Carbon::now(),
-                'user_id' => $userId,
+                'description' => 'Entraînement axé sur le développement musculaire.',
+                'date_creation' => now(),
+                'date_mise_a_jour' => now(),
+                'user_id' => 1, 
             ],
             [
-                'nom' => 'Fitness',
-                'description' => 'Programme visant à améliorer la forme physique générale et le bien-être.',
-                'date_creation' => Carbon::now(),
-                'date_mise_a_jour' => Carbon::now(),
-                'user_id' => $userId,
+                'nom' => 'Cardio',
+                'description' => 'Entraînement pour améliorer l’endurance cardiovasculaire.',
+                'date_creation' => now(),
+                'date_mise_a_jour' => now(),
+                'user_id' => 1, // Idem
             ],
-            [
-                'nom' => 'Préparation Physique',
-                'description' => 'Entraînement spécifique pour améliorer les performances physiques dans divers sports.',
-                'date_creation' => Carbon::now(),
-                'date_mise_a_jour' => Carbon::now(),
-                'user_id' => $userId,
-            ],
+            // Ajoutez d'autres domaines selon vos besoins
         ];
 
         DB::table('domaine_sportifs')->insert($domaines);
+        $this->command->info('DomaineSportifSeeder has seeded the domaine_sportifs table!');
     }
 }

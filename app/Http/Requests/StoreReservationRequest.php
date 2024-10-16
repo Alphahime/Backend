@@ -6,17 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreReservationRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): bool
     {
-        return true;
+        return true; // Adjust based on your authorization logic
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
-            'date_seance' => 'required|date',
-            'status' => 'required|in:pending,confirmed,completed',
+            //'coach_id' => 'required|exists:coaches,id',
+            //'date_seance' => 'required|date',
+            //'status' => 'required|string|in:pending,completed,cancelled', // Example statuses
         ];
     }
 }

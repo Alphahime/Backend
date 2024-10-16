@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\User;
 
 class RoleSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Créer les rôles
+        // Créer les rôles s'ils n'existent pas
         $roles = [
             'super admin',
             'coach',
@@ -21,7 +22,7 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $role) {
-            Role::create(['name' => $role]);
+            Role::firstOrCreate(['name' => $role]);
         }
 
         // Assigner des permissions à chaque rôle
@@ -46,6 +47,19 @@ class RoleSeeder extends Seeder
             'view users',
         ];
         $client->givePermissionTo($clientPermissions);
+
+       
+        $adminUser = User::firstOrCreate([
+            'email' => 'admin@example.com',
+        ], [
+            'nom' => 'Admin',
+            'prenom' => 'Super',
+            'mot_de_passe' => bcrypt('adminpassword'),
+            'telephone' => '123456789',
+            'localisation' => 'Dakar, Sénégal',
+        ]);
+
+        
+        $adminUser->assignRole('super admin');
     }
 }
-

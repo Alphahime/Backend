@@ -14,12 +14,12 @@ use Illuminate\Http\Request;
  *     @OA\Property(property="nom", type="string", example="Titre de l'article"),
  *     @OA\Property(property="description", type="string", example="Description de l'article"),
  *     @OA\Property(property="type_article", type="string", example="Type d'article"),
+ *     @OA\Property(property="image", type="string", example="url_de_l_image"),
  *     @OA\Property(property="user_id", type="integer", example=1),
  *     @OA\Property(property="created_at", type="string", format="date-time"),
  *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
  */
-
 class ArticleController extends Controller
 {
     /**
@@ -56,10 +56,11 @@ class ArticleController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"nom","description","type_article"},
+     *             required={"nom", "description", "type_article", "image"},
      *             @OA\Property(property="nom", type="string", example="Titre de l'article"),
      *             @OA\Property(property="description", type="string", example="Description de l'article"),
-     *             @OA\Property(property="type_article", type="string", example="Type d'article")
+     *             @OA\Property(property="type_article", type="string", example="Type d'article"),
+     *             @OA\Property(property="image", type="string", example="url_de_l_image") // Ajout de la propriété image
      *         )
      *     ),
      *     @OA\Response(
@@ -81,26 +82,26 @@ class ArticleController extends Controller
      * )
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'description' => 'required|string',
-            'type_article' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'nom' => 'required|string|max:255',
+        'description' => 'required|string',
+        'type_article' => 'required|string',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
+    ]);
 
-        $article = Article::create([
-            'nom' => $request->nom,
-            'description' => $request->description,
-            'type_article' => $request->type_article,
-            'user_id' => Auth::id(),
-        ]);
+    // Enregistrement de l'image dans le répertoire public/storage/images
+    $imagePath = $request->file('image')->store('images', 'public');
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Article créé avec succès.',
-            'data' => $article
-        ]);
-    }
+    $article = new Article();
+    $article->nom = $request->nom;
+    $article->description = $request->description;
+    $article->type_article = $request->type_article;
+    $article->image = $imagePath; // Enregistrement du chemin de l'image
+    $article->save();
+
+    return response()->json(['message' => 'Article ajouté avec succès.'], 201);
+}
 
     /**
      * @OA\Get(
@@ -156,10 +157,11 @@ class ArticleController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"nom","description","type_article"},
+     *             required={"nom", "description", "type_article"},
      *             @OA\Property(property="nom", type="string", example="Titre mis à jour"),
      *             @OA\Property(property="description", type="string", example="Nouvelle description de l'article"),
-     *             @OA\Property(property="type_article", type="string", example="Nouveau type")
+     *             @OA\Property(property="type_article", type="string", example="Nouveau type"),
+     *             @OA\Property(property="image", type="string", example="url_de_l_image") // Ajout de la propriété image
      *         )
      *     ),
      *     @OA\Response(
@@ -184,13 +186,29 @@ class ArticleController extends Controller
     {
         $article = Article::findOrFail($id);
 
+        // Validation des données
         $request->validate([
             'nom' => 'required|string|max:255',
             'description' => 'required|string',
             'type_article' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation du fichier image
         ]);
 
-        $article->update($request->all());
+        // Mise à jour des données
+        $article->nom = $request->nom;
+        $article->description = $request->description;
+        $article->type_article = $request->type_article;
+
+        // Upload et enregistrement du fichier image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('images'), $imageName);
+            $article->image = 'images/'.$imageName; 
+        }
+
+        $article->date_mise_a_jour = now(); 
+        $article->save();
 
         return response()->json([
             'success' => true,

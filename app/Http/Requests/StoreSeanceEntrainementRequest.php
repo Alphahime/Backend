@@ -20,6 +20,7 @@ class StoreSeanceEntrainementRequest extends FormRequest
             'chronometre' => 'nullable|string',
             'ordre' => 'required|integer',
             'date_mise_a_jour' => 'nullable|date',
+            'programme_entrainement_id' => 'required|exists:programme_entrainements,id', 
         ];
     }
 }

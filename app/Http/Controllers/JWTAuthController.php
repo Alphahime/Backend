@@ -65,44 +65,61 @@ class JWTAuthController extends Controller
      * )
      */
 
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'mot_de_passe' => 'required|string|min:6|confirmed',
-            'telephone' => 'required|string',
-            'localisation' => 'required|string',
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-    
-        $user = User::create([
-            'nom' => $request->get('nom'),
-            'prenom' => $request->get('prenom'),
-            'email' => $request->get('email'),
-            'mot_de_passe' => Hash::make($request->get('mot_de_passe')),
-            'telephone' => $request->get('telephone'),
-            'localisation' => $request->get('localisation'),
-        ]);
-    
-        return response()->json(compact('user'), 201);
-    }
-    
-
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'mot_de_passe');
-    
-        if (!$token = JWTAuth::attempt(['email' => $credentials['email'], 'password' => $credentials['mot_de_passe']])) {
-            return response()->json(['error' => 'Invalid credentials'], 400);
-        }
-    
-        return response()->json(compact('token'));
-    }
+     public function register(Request $request)
+     {
+         $validator = Validator::make($request->all(), [
+             'nom' => 'required|string|max:255',
+             'prenom' => 'required|string|max:255',
+             'email' => 'required|string|email|max:255|unique:users',
+             'mot_de_passe' => 'required|string|min:6|confirmed',
+             'telephone' => 'required|string',
+             'localisation' => 'required|string',
+             'role' => 'required|string' // Vérifier le rôle
+         ]);
+     
+         if ($validator->fails()) {
+             return response()->json($validator->errors()->toJson(), 400);
+         }
+     
+         $user = User::create([
+             'nom' => $request->get('nom'),
+             'prenom' => $request->get('prenom'),
+             'email' => $request->get('email'),
+             'mot_de_passe' => Hash::make($request->get('mot_de_passe')),
+             'telephone' => $request->get('telephone'),
+             'localisation' => $request->get('localisation'),
+         ]);
+     
+         // Assigner le rôle à l'utilisateur nouvellement créé
+         $user->assignRole($request->get('role')); // Cela devrait fonctionner maintenant
+     
+         return response()->json(compact('user'), 201);
+     }
+     
+     public function login(Request $request)
+     {
+         $credentials = $request->only('email', 'mot_de_passe');
+     
+         // Vérification manuelle du mot de passe
+         $user = User::where('email', $credentials['email'])->first();
+     
+         if ($user && Hash::check($credentials['mot_de_passe'], $user->mot_de_passe)) {
+             // Générer un token JWT
+             $token = JWTAuth::fromUser($user);
+             
+             // Récupérer le rôle
+             $role = $user->getRoleNames()->first(); // Assumes you use Spatie\Permission
+     
+             return response()->json([
+                 'token' => $token,
+                 'user' => $user,
+                 'role' => $role
+             ]);
+         }
+     
+         return response()->json(['error' => 'Identifiants invalides'], 400);
+     }
+     
     
     public function getUser(Request $request)
     {

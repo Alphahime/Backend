@@ -14,15 +14,7 @@ class StoreProgrammeEntrainementRequest extends FormRequest
     public function rules()
     {
         return [
-            'nom' => 'required|string|max:255',
-            'description' => 'required|string',
-            'duree' => 'required|string',
-            'frequence' => 'required|string',
-            'niveau_difficulte' => 'required|string',
-            'type_programme' => 'required|in:en ligne,presentiel',
-            'status' => 'required|in:actif,inactif',
-            'date_creation' => 'nullable|date',
-            'date_mise_a_jour' => 'nullable|date',
+           
         ];
     }
 }

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Coach;
 use Illuminate\Http\Request;
+use App\Mail\CoachAcceptedMail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreCoachRequest;
 use App\Http\Requests\UpdateCoachRequest;
 
@@ -103,9 +106,15 @@ class CoachController extends Controller
      */
     public function store(StoreCoachRequest $request)
     {
-        $coach = Coach::create($request->validated());
+        $validatedData = $request->validated();
+    
+        // Création d'un nouveau coach
+        $coach = Coach::create($validatedData);
+    
         return response()->json($coach, 201);
     }
+    
+    
 
     /**
      * @OA\Get(
@@ -123,8 +132,16 @@ class CoachController extends Controller
      */
     public function index()
     {
-        $coaches = Coach::all();
-        return response()->json($coaches);
+        try {
+            // Récupérer tous les coachs
+            $coaches = Coach::all();
+            return response()->json($coaches, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erreur lors de la récupération des coachs.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -156,34 +173,63 @@ class CoachController extends Controller
      */
     public function show($id)
     {
-        $coach = Coach::findOrFail($id);
-        return response()->json($coach);
+        // Récupérer les détails du coach avec les informations de l'utilisateur
+        $coach = Coach::with('user')->find($id);
+
+        if (!$coach) {
+            return response()->json(['message' => 'Coach not found'], 404);
+        }
+
+        return response()->json([
+            'coach' => $coach,
+            'user' => $coach->user // Cela renverra l'utilisateur lié au coach
+        ]);
     }
-
-   /**
- * @OA\Schema(
- *     schema="UpdateCoachRequest",
- *     type="object",
- *     title="UpdateCoachRequest",
- *     required={"user_id", "profil_verifie"},
- *     @OA\Property(property="user_id", type="integer", description="ID de l'utilisateur associé"),
- *     @OA\Property(property="profil_verifie", type="boolean", description="Statut de vérification du profil"),
- *     @OA\Property(property="experience", type="string", description="Détails de l'expérience du coach"),
- *     @OA\Property(property="description", type="string", description="Description du coach"),
- *     @OA\Property(property="lieu", type="string", description="Lieu du coach"),
- *     @OA\Property(property="services", type="object", description="Services offerts par le coach"),
- *     @OA\Property(property="galerie_photos", type="array", @OA\Items(type="string", format="url"), description="Galerie de photos du coach"),
- *     @OA\Property(property="diplomes", type="array", @OA\Items(type="string"), description="Diplômes ou certifications du coach"),
- *     @OA\Property(property="disponibilites", type="array", @OA\Items(type="string"), description="Disponibilités du coach"),
- * )
- */
-
+    /**
+     * @OA\Put(
+     *     path="/api/coaches/{id}",
+     *     operationId="updateCoach",
+     *     tags={"Coaches"},
+     *     summary="Mettre à jour un coach",
+     *     description="Met à jour les informations d'un coach spécifique",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         ),
+     *         description="ID du coach"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateCoachRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Coach mis à jour avec succès",
+     *         @OA\JsonContent(ref="#/components/schemas/Coach")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Données invalides"
+     *     )
+     * )
+     */
     public function update(UpdateCoachRequest $request, $id)
     {
-        $coach = Coach::findOrFail($id);
-        $coach->update($request->validated());
-        return response()->json($coach);
+        try {
+            // Récupérer le coach à mettre à jour
+            $coach = Coach::findOrFail($id);
+            // Mettre à jour les données validées
+            $coach->update($request->validated());
+    
+            return response()->json($coach, 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Coach non trouvé.'], 404);
+        }
     }
+    
 
     /**
      * @OA\Delete(
@@ -213,8 +259,52 @@ class CoachController extends Controller
      */
     public function destroy($id)
     {
-        $coach = Coach::findOrFail($id);
-        $coach->delete();
-        return response()->json(null, 204);
+        try {
+            // Récupérer et supprimer le coach
+            $coach = Coach::findOrFail($id);
+            $coach->delete();
+            return response()->json(null, 204);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Coach non trouvé.',
+                'details' => $e->getMessage()
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erreur lors de la suppression du coach.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
+
+
+    public function acceptCoach($id) {
+        // Récupérer le coach avec l'ID donné
+        $coach = Coach::find($id);
+    
+        // Vérifier si le coach existe
+        if ($coach) {
+            // Créer un utilisateur pour le coach
+            $user = User::create([
+                'name' => $coach->name,
+                'email' => $coach->email,
+                'password' => Hash::make('password_temporaire'), // Vous pouvez générer un mot de passe aléatoire
+            ]);
+    
+            // Assigner un rôle de coach à cet utilisateur (si vous utilisez des rôles)
+            $user->assignRole('coach');
+    
+           
+            $coach->status = 'accepted';
+            $coach->save();
+    
+           
+            Mail::to($coach->email)->send(new CoachAcceptedMail($user));
+    
+            return response()->json(['message' => 'Coach accepté et accès générés avec succès']);
+        } else {
+            return response()->json(['message' => 'Coach non trouvé'], 404);
+        }
+    }
+    
 }

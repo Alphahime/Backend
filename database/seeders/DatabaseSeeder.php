@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CategorieSeeder::class,
             PlanNutritionnelSeeder::class,  
             CoachingSeeder::class,
+            ReservationSeeder::class,
         ]);
     }
 }

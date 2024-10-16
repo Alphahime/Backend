@@ -4,28 +4,57 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-
 /**
  * @OA\Schema(
  *     schema="StoreCoachRequest",
  *     type="object",
  *     title="Store Coach Request",
  *     description="Request body for creating a new coach",
- *     required={"name", "email"},
+ *     required={"user_id", "profil_verifie"},
  *     @OA\Property(
- *         property="name",
- *         type="string",
- *         description="Name of the coach"
+ *         property="user_id",
+ *         type="integer",
+ *         description="User ID associated with the coach"
  *     ),
  *     @OA\Property(
- *         property="email",
- *         type="string",
- *         description="Email of the coach"
+ *         property="profil_verifie",
+ *         type="boolean",
+ *         description="Coach profile verification status"
  *     ),
  *     @OA\Property(
- *         property="phone",
+ *         property="experience",
  *         type="string",
- *         description="Phone number of the coach"
+ *         description="Experience of the coach"
+ *     ),
+ *     @OA\Property(
+ *         property="description",
+ *         type="string",
+ *         description="Coach description"
+ *     ),
+ *     @OA\Property(
+ *         property="lieu",
+ *         type="string",
+ *         description="Location of the coach"
+ *     ),
+ *     @OA\Property(
+ *         property="services",
+ *         type="string",
+ *         description="Services provided by the coach"
+ *     ),
+ *     @OA\Property(
+ *         property="galerie_photos",
+ *         type="string",
+ *         description="Photo gallery of the coach"
+ *     ),
+ *     @OA\Property(
+ *         property="diplomes",
+ *         type="string",
+ *         description="Coach's diplomas or certifications"
+ *     ),
+ *     @OA\Property(
+ *         property="disponibilites",
+ *         type="string",
+ *         description="Coach's availability"
  *     )
  * )
  */
@@ -41,13 +70,13 @@ class StoreCoachRequest extends FormRequest
         return [
             'user_id' => 'required|exists:users,id',
             'profil_verifie' => 'required|boolean',
-            'experience' => 'required|string',
-            'description' => 'required|string',
-            'lieu' => 'required|string',
-            'services' => 'required|json',
-            'galerie_photos' => 'nullable|json',
-            'diplomes' => 'nullable|json',
-            'disponibilites' => 'nullable|json',
+            'experience' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'lieu' => 'nullable|string|max:255',
+            'services' => 'nullable|string|max:255',
+            'galerie_photos' => 'nullable|string',
+            'diplomes' => 'nullable|string',
+            'disponibilites' => 'nullable|string',
         ];
     }
 }

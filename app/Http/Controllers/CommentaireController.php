@@ -74,9 +74,13 @@ class CommentaireController extends Controller
     public function store(StoreCommentaireRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+        $validatedData['user_id'] = Auth::id();  
+    
+        
         $commentaire = Commentaire::create($validatedData);
         return response()->json($commentaire, 201);
     }
+    
 
     /**
      * @OA\Get(
