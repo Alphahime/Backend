@@ -14,9 +14,10 @@ class StoreReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //'coach_id' => 'required|exists:coaches,id',
-            //'date_seance' => 'required|date',
-            //'status' => 'required|string|in:pending,completed,cancelled', // Example statuses
+            'coach_id' => 'required|exists:coaches,id',
+            'date_seance' => 'required|date',
+            'status' => 'required|string|in:pending,completed,cancelled',
         ];
     }
+    
 }

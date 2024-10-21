@@ -25,16 +25,18 @@ class ReservationController extends Controller
             'date_seance' => 'required|date',
             'status' => 'nullable|in:pending,confirmed,completed',
         ]);
-    
+        
         try {
             $validatedData = $request->only(['coach_id', 'date_seance', 'status']);
-            $validatedData['user_id'] = Auth::id();
+            $validatedData['user_id'] = Auth::id(); // Ensure the user is authenticated
     
+            // Create reservation
             $reservation = Reservation::create($validatedData);
     
-            // Chargez la relation coach explicitement
+            // Load coach relation
             $reservation->load('coach');
     
+            // Send email if coach exists
             if ($reservation->coach) {
                 Mail::to($reservation->coach->email)->send(new \App\Mail\ReservationCreated($reservation));
             }
@@ -44,6 +46,7 @@ class ReservationController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
     
     
     public function show(Reservation $reservation): JsonResponse
@@ -72,3 +75,4 @@ class ReservationController extends Controller
         return response()->json(null, 204);
     }
 }
+    

@@ -282,49 +282,43 @@ class CoachController extends Controller
 
    
 
-    public function acceptCoach($id) {
-        // Récupérer le coach avec l'ID donné
+    public function acceptCoach($id)
+    {
         $coach = Coach::find($id);
         
-        // Vérifier si le coach existe
         if (!$coach) {
             return response()->json(['message' => 'Coach non trouvé'], 404);
         }
-    
-        // Récupérer l'utilisateur associé au coach
+        
         $user = User::find($coach->user_id);
+        $temporaryPassword = Str::random(10); // Génération du mot de passe temporaire
     
-        // Vérifier si l'utilisateur a un email valide
-        if (!$user || !$user->email) {
-            return response()->json(['error' => 'Le coach n\'a pas d\'email.'], 400);
-        }
-    
-        // Générer un mot de passe temporaire aléatoire
-        $temporaryPassword = Str::random(10);
-    
-        // Créer un utilisateur si nécessaire
+        // Créer l'utilisateur s'il n'existe pas
         if (!$user) {
             $user = User::create([
-                'name' => $coach->name,  // Assurez-vous que le nom du coach est renseigné
+                'nom' => $coach->name,
                 'email' => $coach->email,
-                'password' => Hash::make($temporaryPassword),  // Génération du mot de passe sécurisé
+                'mot_de_passe' => Hash::make($temporaryPassword), // Utilisation du mot de passe temporaire
             ]);
+        } else {
+            // Si l'utilisateur existe, mettre à jour son mot de passe avec le mot de passe temporaire
+            $user->mot_de_passe = Hash::make($temporaryPassword);
+            $user->save();
         }
-    
-        // Assigner un rôle de coach à cet utilisateur (si vous utilisez des rôles)
-        $user->assignRole('coach');
-    
-        // Mise à jour du statut du coach à "accepté"
-        $coach->status = 'accepted';
+        
+        $coach->profil_verifie = true;
         $coach->save();
-    
-        // Envoyer l'email au coach avec les accès générés
-        Mail::to($user->email)->send(new CoachAcceptedMail($user, $temporaryPassword));
-    
-        return response()->json(['message' => 'Coach accepté et accès générés avec succès']);
+        
+        try {
+            Mail::to($user->email)->send(new CoachAcceptedMail($user, $temporaryPassword));
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de l\'envoi de l\'email : ' . $e->getMessage()], 500);
+        }
+        
+        return response()->json([
+            'message' => 'Coach accepté et accès générés avec succès',
+            'temporaryPassword' => $temporaryPassword 
+        ]);
     }
-    
-    
-    
     
 }

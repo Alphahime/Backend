@@ -25,6 +25,18 @@ class RoleSeeder extends Seeder
             Role::firstOrCreate(['name' => $role]);
         }
 
+        // Créer les permissions s'ils n'existent pas
+        $permissions = [
+            'view users',
+            'edit users',
+            'view roles',
+            'view permissions',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
         // Assigner des permissions à chaque rôle
         $superAdmin = Role::findByName('super admin');
         $coach = Role::findByName('coach');
@@ -48,7 +60,7 @@ class RoleSeeder extends Seeder
         ];
         $client->givePermissionTo($clientPermissions);
 
-       
+        // Créer ou mettre à jour l'utilisateur admin
         $adminUser = User::firstOrCreate([
             'email' => 'admin@example.com',
         ], [
@@ -59,7 +71,7 @@ class RoleSeeder extends Seeder
             'localisation' => 'Dakar, Sénégal',
         ]);
 
-        
+        // Assigner le rôle super admin à l'admin
         $adminUser->assignRole('super admin');
     }
 }

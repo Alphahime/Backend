@@ -138,6 +138,8 @@ class JWTAuthController extends Controller
 
         return response()->json(['message' => 'Successfully logged out']);
     }
+
+    
 }
 
 

@@ -55,6 +55,16 @@ use Illuminate\Foundation\Http\FormRequest;
  *         property="disponibilites",
  *         type="string",
  *         description="Coach's availability"
+ *     ),
+ *     @OA\Property(
+ *         property="reseaux_sociaux",
+ *         type="string",
+ *         description="Social networks of the coach in JSON format"
+ *     ),
+ *     @OA\Property(
+ *         property="avis_clients",
+ *         type="string",
+ *         description="Client reviews for the coach in JSON format"
  *     )
  * )
  */
@@ -77,6 +87,8 @@ class StoreCoachRequest extends FormRequest
             'galerie_photos' => 'nullable|string',
             'diplomes' => 'nullable|string',
             'disponibilites' => 'nullable|string',
+            'reseaux_sociaux' => 'nullable|json', 
+            'avis_clients' => 'nullable|json',   
         ];
     }
 }
