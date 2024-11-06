@@ -3,15 +3,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Coach;
+use App\Models\Reservation;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\CoachAcceptedMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreCoachRequest;
 use App\Http\Requests\UpdateCoachRequest;
-use Illuminate\Support\Str;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
+
 
 /**
  * @OA\Tag(
@@ -187,6 +192,7 @@ class CoachController extends Controller
             'user' => $coach->user // Cela renverra l'utilisateur lié au coach
         ]);
     }
+    
     /**
      * @OA\Put(
      *     path="/api/coaches/{id}",
@@ -259,6 +265,8 @@ class CoachController extends Controller
      *     )
      * )
      */
+
+     
     public function destroy($id)
     {
         try {
@@ -289,7 +297,8 @@ class CoachController extends Controller
         if (!$coach) {
             return response()->json(['message' => 'Coach non trouvé'], 404);
         }
-        
+    
+        // Récupérer l'utilisateur associé au coach
         $user = User::find($coach->user_id);
         $temporaryPassword = Str::random(10); // Génération du mot de passe temporaire
     
@@ -297,28 +306,86 @@ class CoachController extends Controller
         if (!$user) {
             $user = User::create([
                 'nom' => $coach->name,
+                'prenom' => $coach->prenom, // Ajout du prénom
                 'email' => $coach->email,
-                'mot_de_passe' => Hash::make($temporaryPassword), // Utilisation du mot de passe temporaire
+                'mot_de_passe' => Hash::make($temporaryPassword),
             ]);
         } else {
-            // Si l'utilisateur existe, mettre à jour son mot de passe avec le mot de passe temporaire
             $user->mot_de_passe = Hash::make($temporaryPassword);
             $user->save();
         }
-        
+    
+        // Assigner le rôle de coach en utilisant l'ID correct
+        $coachRoleId = 2; // Remplacez par l'ID du rôle 'coach' dans la base de données
+        $user->roles()->syncWithoutDetaching([$coachRoleId]);
+    
+        // Vérifier le rôle de coach
+        if (!$user->roles->contains('id', $coachRoleId)) {
+            return response()->json(['message' => 'Erreur lors de l\'assignation du rôle coach'], 500);
+        }
+    
+        // Mettre à jour le profil du coach
         $coach->profil_verifie = true;
         $coach->save();
-        
+    
         try {
             Mail::to($user->email)->send(new CoachAcceptedMail($user, $temporaryPassword));
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erreur lors de l\'envoi de l\'email : ' . $e->getMessage()], 500);
         }
-        
+    
         return response()->json([
             'message' => 'Coach accepté et accès générés avec succès',
             'temporaryPassword' => $temporaryPassword 
         ]);
     }
+    
+    
+    public function getReservations()
+    {
+        // Vérifie si l'utilisateur est authentifié
+        if (!Auth::check()) { // Correction ici
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour voir vos réservations.');
+        }
+    
+        // Récupère l'ID de l'utilisateur connecté (le coach)
+        $coachId = Auth::user()->id; // Correction ici
+    
+        // Récupère les réservations associées uniquement à ce coach
+        $reservations = Reservation::where('coach_id', $coachId)->get();
+    
+        // Retourne la liste des réservations dans la vue
+        return view('reservations.index', compact('reservations'));
+    }
+    
+    
+    public function getReservationsByCoach()
+    {
+        // Vérifier si l'utilisateur est authentifié
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Vous devez être connecté pour voir vos réservations.'], 401);
+        }
+    
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
+    
+        // Vérifier si l'utilisateur a le rôle "coach"
+        if (!$user->hasRole('coach')) { 
+            return response()->json(['error' => 'Accès non autorisé ou utilisateur non coach'], 403);
+            
+        }
+      
+
+    
+        // Récupérer les réservations pour le coach connecté
+        $reservations = Reservation::where('coach_id', $user->id)->get();
+    
+        return response()->json([
+            'message' => 'Réservations récupérées avec succès',
+            'reservations' => $reservations
+        ], 200);
+    }
+    
+     
     
 }

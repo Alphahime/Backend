@@ -45,7 +45,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Routes Messages
     Route::get('messages', [MessageController::class, 'index']);
-    Route::post('messages', [MessageController::class, 'store']);
+  
     Route::get('messages/{message}', [MessageController::class, 'show']);
     Route::put('messages/{message}', [MessageController::class, 'update']);
     Route::delete('messages/{message}', [MessageController::class, 'destroy']);
@@ -72,12 +72,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/domaine-sportifs/{domaineSportif}', [DomaineSportifController::class, 'update']);
     Route::delete('/domaine-sportifs/{domaineSportif}', [DomaineSportifController::class, 'destroy']);
 
-    // Routes Ressources
-    Route::post('ressources', [RessourceController::class, 'store']);
-    Route::get('ressources/{ressource}', [RessourceController::class, 'show']);
-    Route::put('ressources/{ressource}', [RessourceController::class, 'update']);
-    Route::delete('ressources/{ressource}', [RessourceController::class, 'destroy']);
-
+   
     
   
     Route::post('/reservations', [ReservationController::class, 'store']);
@@ -85,8 +80,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/reservations/{reservation}', [ReservationController::class, 'update']);
     Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy']);
     
- 
- 
+    // Route::get('/coaches/{id}/reservations', [CoachController::class, 'getReservations']);
+  
+    Route::get('/coaches/reservations', [CoachController::class, 'getReservationsByCoach']);
+
 });
 Route::get('/coaches', [CoachController::class, 'index']);
 
@@ -120,19 +117,13 @@ Route::delete('/commentaires/{commentaire}', [CommentaireController::class, 'des
  Route::put('/suivis/{id}', [SuiviSeanceController::class, 'update']);
  Route::delete('/suivis/{id}', [SuiviSeanceController::class, 'destroy']);
 
-  // Routes Coachings
-  Route::get('/coachings', [CoachingController::class, 'index']);
-  Route::post('/coachings', [CoachingController::class, 'store']);
-  Route::get('/coachings/{id}', [CoachingController::class, 'show']);
-  Route::put('/coachings/{id}', [CoachingController::class, 'update']);
-  Route::delete('/coachings/{id}', [CoachingController::class, 'destroy']);
-
+ 
    
   Route::post('/coaches', [CoachController::class, 'store']);
   Route::get('/coaches/{id}', [CoachController::class, 'show']);
   Route::put('/coaches/{id}', [CoachController::class, 'update']);
   Route::delete('/coaches/{id}', [CoachController::class, 'destroy']);
-  
+  Route::get('/coaches/{id}/reservations', [CoachController::class, 'getReservations']);
     // Routes pour rôles et permissions
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('permissions', PermissionController::class);
@@ -142,4 +133,16 @@ Route::delete('/commentaires/{commentaire}', [CommentaireController::class, 'des
     Route::put('/coaches/accept-coach/{id}', [CoachController::class, 'acceptCoach']);
 
     Route::get('/reservations', [ReservationController::class, 'index']);
-    
+
+
+     // Routes Ressources
+     Route::post('ressources', [RessourceController::class, 'store']);
+     Route::get('ressources/{ressource}', [RessourceController::class, 'show']);
+     Route::put('ressources/{ressource}', [RessourceController::class, 'update']);
+     Route::delete('ressources/{ressource}', [RessourceController::class, 'destroy']);
+     Route::post('messages', [MessageController::class, 'store']);
+
+
+     Route::post('/reservations/{reservation}/accept', [ReservationController::class, 'accepterReservation']);
+     Route::post('/reservations/{reservation}/cancel', [ReservationController::class, 'annulerReservation']);
+    //  Route::middleware('auth:api')->get('/mes-reservations', [ReservationController::class, 'mesReservations']);

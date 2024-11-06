@@ -10,7 +10,7 @@ class CreateProgrammeEntrainementsTable extends Migration
     {
         Schema::create('programme_entrainements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('coaching_id')->constrained('coachings')->onDelete('cascade');
+            $table->bigInteger('categorie_id')->unsigned()->nullable();
             $table->foreignId('domaine_sportif_id')->constrained('domaine_sportifs')->onDelete('cascade');
             $table->string('nom');
             $table->text('description');

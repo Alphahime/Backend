@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Spatie\Permission\Traits\HasRoles; // Ajoute cette ligne
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -26,7 +26,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $hidden = [
-        'mot_de_passe', 'remember_token',
+        'mot_de_passe', 'user_idremember_token',
     ];
 
     /**
@@ -98,11 +98,18 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Commentaire::class);
     }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 
-    // Ne pas inclure la méthode roles() ici car elle est gérée par le trait HasRoles
+    
 
     public function setPasswordAttribute($value)
     {
         $this->attributes['mot_de_passe'] = bcrypt($value);
     }
+
+
+
 }

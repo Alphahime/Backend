@@ -66,19 +66,36 @@ class PlanNutritionnelController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        $plans = PlanNutritionnel::all();
+        // Start with all plans
+        $query = PlanNutritionnel::query();
         
-        // Décoder les ingrédients et étapes
+        // Filtering logic based on query parameters
+        if ($request->has('nom')) {
+            $query->where('nom', 'like', '%' . $request->nom . '%');
+        }
+    
+        if ($request->has('type_alimentation')) {
+            $query->where('type_alimentation', $request->type_alimentation);
+        }
+    
+        if ($request->has('calories_totale')) {
+            $query->where('calories_totale', $request->calories_totale);
+        }
+    
+        // Get the filtered results
+        $plans = $query->get();
+        
+        // Decode ingredients and steps
         foreach ($plans as $plan) {
             $plan->ingredients = json_decode($plan->ingredients, true);
             $plan->etapes = json_decode($plan->etapes, true);
         }
-
-        return response()->json($plans, 200); // Renvoyer la liste des plans sous format JSON
+    
+        return response()->json($plans, 200); // Return the filtered list as JSON
     }
-
+    
     /**
      * @OA\Post(
      *     path="/api/plans-nutritionnels",
@@ -243,4 +260,5 @@ class PlanNutritionnelController extends Controller
     
         return response()->json(null, 204);
     }
+    
 }

@@ -15,7 +15,7 @@ class Coach extends Model
 
     protected $fillable = [
         'user_id', 'profil_verifie', 'experience', 'description', 'lieu', 
-        'services', 'galerie_photos', 'diplomes', 'disponibilites'
+        'services', 'galerie_photos', 'diplomes', 'disponibilites','tarif'
     ];
 
   
@@ -24,11 +24,17 @@ class Coach extends Model
         'galerie_photos' => 'array',
         'diplomes' => 'array',
         'disponibilites' => 'array',
+        'tarif' => 'array',
     ];
 
     
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'coach_id');
     }
 }

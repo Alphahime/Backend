@@ -3,12 +3,22 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\ProgrammeEntrainement;
+use App\Models\Categorie;
+use App\Models\DomaineSportif;
 
 class ProgrammeEntrainementSeeder extends Seeder
 {
     public function run()
     {
+        $categories = Categorie::all();
+        $domaines = DomaineSportif::all();
+
+        if ($categories->isEmpty() || $domaines->isEmpty()) {
+            $this->command->error('Categories or Domaines Sportifs not found.');
+            return;
+        }
+
         $programmes = [
             [
                 'nom' => 'Programme Musculation Force Pure',
@@ -18,12 +28,7 @@ class ProgrammeEntrainementSeeder extends Seeder
                 'niveau_difficulte' => 'Avancé',
                 'type_programme' => 'présentiel',
                 'status' => 'actif',
-                'images' => 'https://www.example.com/path/to/real-image1.jpg', // Remplacez par la vraie URL de l'image
-                'domaine_sportif_id' => 7, 
-                'categorie_id' => 4, 
-                'coaching_id' => 2, 
-                'date_creation' => now(),
-                'date_mise_a_jour' => now(),
+                'images' => 'https://www.example.com/path/to/real-image1.jpg',
             ],
             [
                 'nom' => 'Programme Cardio Intensif',
@@ -33,17 +38,19 @@ class ProgrammeEntrainementSeeder extends Seeder
                 'niveau_difficulte' => 'Intermédiaire',
                 'type_programme' => 'en ligne',
                 'status' => 'actif',
-                'images' => 'https://www.example.com/path/to/real-image2.jpg', // Remplacez par la vraie URL de l'image
-                'domaine_sportif_id' => 8,
-                'categorie_id' => 5,
-                'coaching_id' => 3,
-                'date_creation' => now(),
-                'date_mise_a_jour' => now(),
+                'images' => 'https://www.example.com/path/to/real-image2.jpg',
             ],
-            // Ajoutez d'autres programmes avec des images réelles...
         ];
 
-        DB::table('programme_entrainements')->insert($programmes);
+        foreach ($programmes as $programmeData) {
+            ProgrammeEntrainement::create(array_merge($programmeData, [
+                'domaine_sportif_id' => $domaines->random()->id,
+                'categorie_id' => $categories->random()->id,
+                'date_creation' => now(),
+                'date_mise_a_jour' => now(),
+            ]));
+        }
+
         $this->command->info('ProgrammeEntrainementSeeder a été exécuté avec succès !');
     }
 }

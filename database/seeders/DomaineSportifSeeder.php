@@ -1,9 +1,8 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\DomaineSportif;
 
 class DomaineSportifSeeder extends Seeder
 {
@@ -13,21 +12,23 @@ class DomaineSportifSeeder extends Seeder
             [
                 'nom' => 'Musculation',
                 'description' => 'Entraînement axé sur le développement musculaire.',
-                'date_creation' => now(),
-                'date_mise_a_jour' => now(),
-                'user_id' => 1, 
+                'user_id' => 1,
             ],
             [
                 'nom' => 'Cardio',
                 'description' => 'Entraînement pour améliorer l’endurance cardiovasculaire.',
-                'date_creation' => now(),
-                'date_mise_a_jour' => now(),
-                'user_id' => 1, // Idem
+                'user_id' => 1,
             ],
             // Ajoutez d'autres domaines selon vos besoins
         ];
 
-        DB::table('domaine_sportifs')->insert($domaines);
+        foreach ($domaines as $domaineData) {
+            DomaineSportif::create(array_merge($domaineData, [
+                'date_creation' => now(),
+                'date_mise_a_jour' => now(),
+            ]));
+        }
+        
         $this->command->info('DomaineSportifSeeder has seeded the domaine_sportifs table!');
     }
 }

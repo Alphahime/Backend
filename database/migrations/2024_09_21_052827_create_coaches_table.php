@@ -24,6 +24,7 @@ return new class extends Migration
             $table->json('galerie_photos')->nullable(); 
             $table->json('diplomes')->nullable(); 
             $table->json('disponibilites')->nullable();
+            $table->json('tarif')->nullable();
             $table->timestamps();
         });
     }

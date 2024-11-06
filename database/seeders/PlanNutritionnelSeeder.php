@@ -4,189 +4,93 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PlanNutritionnelSeeder extends Seeder
 {
     public function run(): void
     {
-        // Vider la table
-        DB::table('plan_nutritionnels')->truncate();
-
-        // Inserting 30 specific recipes
         $recettes = [
             [
-                'nom' => 'Salade César',
-                'description' => 'Une salade composée avec de la laitue, des croûtons, et une sauce césar maison.',
-                'type_alimentation' => 'Salade',
-                'calories_totale' => '400 kcal',
-                'ingredients' => json_encode([
-                    'Laitue romaine',
-                    'Croûtons',
-                    'Parmesan râpé',
-                    'Sauce césar maison (jaune d\'œuf, huile d\'olive, ail, anchois, moutarde, jus de citron)',
-                    'Poulet grillé (optionnel)',
-                ]),
-                'etapes' => json_encode([
-                    'Laver et couper la laitue.',
-                    'Griller les croûtons dans un peu de beurre.',
-                    'Préparer la sauce césar en mélangeant les ingrédients.',
-                    'Mélanger la laitue avec la sauce, ajouter les croûtons et le parmesan.',
-                    'Ajouter le poulet grillé en tranches si désiré.',
-                ]),
-                'image' => 'https://rians.com/wp-content/uploads/2024/04/1000038128.jpg',
-            ],
-            [
-                'nom' => 'Smoothie Vert Détox',
-                'description' => 'Un smoothie revitalisant et purifiant, idéal pour le petit-déjeuner ou en collation.',
-                'type_alimentation' => 'Boisson',
-                'calories_totale' => '250 kcal',
-                'ingredients' => json_encode([
-                    'Épinards frais',
-                    'Banane',
-                    'Avocat',
-                    'Lait d\'amande',
-                    'Graines de chia',
-                    'Miel (optionnel)',
-                ]),
-                'etapes' => json_encode([
-                    'Mélanger tous les ingrédients dans un mixeur.',
-                    'Ajouter un peu d\'eau ou de lait d\'amande selon la consistance désirée.',
-                    'Servir immédiatement et garnir de graines de chia.',
-                ]),
-                'image' => 'https://www.consoglobe.com/wp-content/uploads/2015/03/smoothie-boisson-detox.jpg',
-            ],
-            [
-                'nom' => 'Poulet au Curry',
-                'description' => 'Un plat de poulet mijoté avec une sauce au curry et lait de coco.',
-                'type_alimentation' => 'Plat principal',
-                'calories_totale' => '600 kcal',
-                'ingredients' => json_encode([
-                    'Filets de poulet',
-                    'Pâte de curry',
-                    'Lait de coco',
-                    'Oignons',
-                    'Tomates',
-                    'Riz basmati (pour accompagner)',
-                ]),
-                'etapes' => json_encode([
-                    'Faire revenir les oignons dans une poêle.',
-                    'Ajouter le poulet coupé en morceaux et cuire jusqu\'à ce qu\'il soit doré.',
-                    'Incorporer la pâte de curry et bien mélanger.',
-                    'Ajouter les tomates et le lait de coco, laisser mijoter 20 minutes.',
-                    'Servir avec du riz basmati.',
-                ]),
-                'image' => 'https://static.750g.com/images/1200-630/91ab938d758f762c1f3f84286b121e53/adobestock-307737508.jpeg',
-            ],
-            [
-                'nom' => 'Pancakes Protéinés',
-                'description' => 'Des pancakes riches en protéines, parfaits pour un petit-déjeuner énergétique.',
+                'nom' => 'Omelette aux épinards',
+                'description' => 'Une omelette délicieuse et nutritive avec des épinards frais.',
                 'type_alimentation' => 'Petit-déjeuner',
-                'calories_totale' => '350 kcal',
-                'ingredients' => json_encode([
-                    'Farine d\'avoine',
-                    'Protéine en poudre (saveur vanille)',
-                    'Lait d\'amande',
-                    'Œufs',
-                    'Sirop d\'érable (optionnel)',
-                ]),
-                'etapes' => json_encode([
-                    'Mélanger tous les ingrédients jusqu\'à obtenir une pâte homogène.',
-                    'Verser des petites portions dans une poêle chaude.',
-                    'Cuire jusqu\'à ce que des bulles apparaissent, puis retourner les pancakes.',
-                    'Servir avec du sirop d\'érable ou des fruits frais.',
-                ]),
-                'image' => 'https://img.cuisineaz.com/660x660/2019/07/12/i147980-pancake-proteine.jpeg',
-            ],
-            // Ajoutez d'autres recettes protéinées et smoothies ici
-        ];
-
-        // Ajouter des recettes protéinées
-        $recettes_proteinees = [
-            [
-                'nom' => 'Poulet Grillé aux Épices',
-                'description' => 'Un poulet grillé savoureux et épicé, parfait pour un repas riche en protéines.',
-                'type_alimentation' => 'Plat principal',
-                'calories_totale' => '450 kcal',
-                'ingredients' => json_encode([
-                    'Filets de poulet',
-                    'Paprika',
-                    'Cumin',
-                    'Ail en poudre',
-                    'Huile d\'olive',
-                    'Sel et poivre',
-                ]),
-                'etapes' => json_encode([
-                    'Mélanger les épices avec l\'huile d\'olive et frotter sur le poulet.',
-                    'Faire mariner pendant au moins 30 minutes.',
-                    'Griller le poulet jusqu\'à ce qu\'il soit bien cuit.',
-                ]),
-                'image' => 'https://resize.prod.femina.ladmedia.fr/rblr/652,438/img/var/2020-09/recette-poulet-grille-aux-e-pices-mai-s-cocon-citron-cyril-lignac.jpg',
+                'calories_totale' => '250',
+                'date_creation' => Carbon::now(),
+                'date_mise_a_jour' => Carbon::now(),
+                'ingredients' => json_encode(['Œufs', 'Épinards', 'Fromage', 'Sel', 'Poivre']),
+                'etapes' => json_encode(['Battre les œufs', 'Ajouter les épinards', 'Cuire à la poêle', 'Ajouter du fromage']),
+                'image' => 'https://img.freepik.com/photos-premium/omelette-aux-oeufs-epinards-ricotta_1082220-1591.jpg?w=826', 
             ],
             [
-                'nom' => 'Omelette aux Épinards et Feta',
-                'description' => 'Une omelette riche en protéines avec des épinards frais et du fromage feta.',
+                'nom' => 'Salade de quinoa',
+                'description' => 'Une salade saine et rassasiante à base de quinoa et de légumes frais.',
+                'type_alimentation' => 'Déjeuner',
+                'calories_totale' => '350',
+                'date_creation' => Carbon::now(),
+                'date_mise_a_jour' => Carbon::now(),
+                'ingredients' => json_encode(['Quinoa', 'Tomates', 'Concombre', 'Avocat', 'Vinaigrette']),
+                'etapes' => json_encode(['Cuire le quinoa', 'Couper les légumes', 'Mélanger tous les ingrédients']),
+                'image' => 'https://img.freepik.com/photos-gratuite/bol-bouddha-vegetarien-quinoa-tofu-legumes-frais-concept-aliments-sains-salade-vegetalienne_2829-6931.jpg?t=st=1729467718~exp=1729471318~hmac=cd8b9433fafe0ad4e5461e1427c09b3325fd5fafad13736c74e6cf4635fc8d08&w=1380', 
+            ],
+            [
+                'nom' => 'Poulet grillé avec légumes',
+                'description' => 'Un plat simple et délicieux de poulet grillé accompagné de légumes.',
+                'type_alimentation' => 'Dîner',
+                'calories_totale' => '400',
+                'date_creation' => Carbon::now(),
+                'date_mise_a_jour' => Carbon::now(),
+                'ingredients' => json_encode(['Poulet', 'Courgettes', 'Poivrons', 'Épices']),
+                'etapes' => json_encode(['Mariner le poulet', 'Griller le poulet', 'Cuire les légumes']),
+                'image' => 'https://img.freepik.com/photos-gratuite/appetissant-riz-sain-legumes-plaque-blanche-table-bois_2829-19773.jpg?t=st=1729467820~exp=1729471420~hmac=810608e354178f858090edde9e4d37e07fe2afc548f81b8bf838e176d14943d7&w=1380', // Chemin vers l'image
+            ],
+            [
+                'nom' => 'Porridge aux fruits',
+                'description' => 'Un porridge crémeux avec des fruits frais pour le petit-déjeuner.',
                 'type_alimentation' => 'Petit-déjeuner',
-                'calories_totale' => '300 kcal',
-                'ingredients' => json_encode([
-                    'Œufs',
-                    'Épinards frais',
-                    'Feta',
-                    'Oignons',
-                    'Huile d\'olive',
-                ]),
-                'etapes' => json_encode([
-                    'Battre les œufs dans un bol.',
-                    'Faire revenir les oignons et les épinards dans une poêle.',
-                    'Ajouter les œufs et la feta, cuire jusqu\'à ce que l\'omelette soit prise.',
-                ]),
-                'image' => 'https://img-global.cpcdn.com/recipes/ab1039aaa1097224/1200x630cq70/photo.jpg',
-            ],
-        ];
-
-        // Ajouter des smoothies
-        $recettes_smoothies = [
-            [
-                'nom' => 'Smoothie aux Fruits Rouges',
-                'description' => 'Un smoothie délicieux à base de fruits rouges, parfait pour une collation.',
-                'type_alimentation' => 'Boisson',
-                'calories_totale' => '200 kcal',
-                'ingredients' => json_encode([
-                    'Fruits rouges (frais ou surgelés)',
-                    'Yaourt nature',
-                    'Lait',
-                    'Miel (optionnel)',
-                ]),
-                'etapes' => json_encode([
-                    'Mettre tous les ingrédients dans un mixeur.',
-                    'Mixer jusqu\'à consistance lisse.',
-                    'Servir frais.',
-                ]),
-                'image' => 'https://gateauetcuisinerachida.com/wp-content/uploads/2023/02/Recette-smoothie-aux-fruits-rouges.jpg',
+                'calories_totale' => '300',
+                'date_creation' => Carbon::now(),
+                'date_mise_a_jour' => Carbon::now(),
+                'ingredients' => json_encode(['Flocons d\'avoine', 'Lait', 'Fruits', 'Miel']),
+                'etapes' => json_encode(['Faire chauffer le lait', 'Ajouter les flocons d\'avoine', 'Ajouter les fruits et le miel']),
+                'image' => 'https://img.freepik.com/photos-gratuite/baies-avoine-raisins-noirs-cerises-groseilles-rouges-grenades_140725-73685.jpg?t=st=1729468064~exp=1729471664~hmac=a5430923c1d4709a41d021e609ce3a6cc5720000f23b002370f47618b1e00248&w=740',
             ],
             [
-                'nom' => 'Smoothie à la Mangue et à la Banane',
-                'description' => 'Un smoothie tropical à base de mangue et de banane, parfait pour l\'été.',
-                'type_alimentation' => 'Boisson',
-                'calories_totale' => '220 kcal',
-                'ingredients' => json_encode([
-                    'Mangue',
-                    'Banane',
-                    'Lait de coco',
-                    'Graines de chia',
-                ]),
-                'etapes' => json_encode([
-                    'Couper la mangue et la banane en morceaux.',
-                    'Mettre dans un mixeur avec le lait de coco.',
-                    'Mixer jusqu\'à obtenir une consistance lisse.',
-                ]),
-                'image' => 'https://www.lesoeufs.ca/assets/RecipeThumbs/Seasonal-Protein-Bowl2.jpg',
+                'nom' => 'Smoothie banane et épinards',
+                'description' => 'Un smoothie nutritif à base de banane et d’épinards.',
+                'type_alimentation' => 'Collation',
+                'calories_totale' => '200',
+                'date_creation' => Carbon::now(),
+                'date_mise_a_jour' => Carbon::now(),
+                'ingredients' => json_encode(['Banane', 'Épinards', 'Yaourt', 'Lait']),
+                'etapes' => json_encode(['Mélanger tous les ingrédients', 'Servir frais']),
+                'image' => 'https://img.freepik.com/photos-gratuite/appetissant-riz-sain-legumes-plaque-blanche-table-bois_2829-19773.jpg?t=st=1729467820~exp=1729471420~hmac=810608e354178f858090edde9e4d37e07fe2afc548f81b8bf838e176d14943d7&w=1380', // Chemin vers l'image
             ],
+            [
+                'nom' => 'Pâtes au pesto',
+                'description' => 'Des pâtes savoureuses avec une sauce pesto maison.',
+                'type_alimentation' => 'Déjeuner',
+                'calories_totale' => '450',
+                'date_creation' => Carbon::now(),
+                'date_mise_a_jour' => Carbon::now(),
+                'ingredients' => json_encode(['Pâtes', 'Basilic', 'Pignons de pin', 'Ail', 'Parmesan']),
+                'etapes' => json_encode(['Cuire les pâtes', 'Préparer le pesto', 'Mélanger les pâtes avec le pesto']),
+                'image' => 'https://img.freepik.com/photos-gratuite/biscuits-aux-baies_1203-9495.jpg?t=st=1729467774~exp=1729471374~hmac=cac2cb02855892dfa4497693057f7f0f03e7614b32ff37066fc2ca773db73700&w=826', 
+            ],
+            [
+                'nom' => 'Bowl de riz et légumes',
+                'description' => 'Un bol de riz savoureux avec des légumes variés.',
+                'type_alimentation' => 'Dîner',
+                'calories_totale' => '500',
+                'date_creation' => Carbon::now(),
+                'date_mise_a_jour' => Carbon::now(),
+                'ingredients' => json_encode(['Riz', 'Brocoli', 'Carottes', 'Sauce soja']),
+                'etapes' => json_encode(['Cuire le riz', 'Cuire les légumes', 'Assembler le bowl']),
+                'image' => 'https://img.freepik.com/photos-gratuite/appetissant-riz-sain-legumes-plaque-blanche-table-bois_2829-19773.jpg?t=st=1729467820~exp=1729471420~hmac=810608e354178f858090edde9e4d37e07fe2afc548f81b8bf838e176d14943d7&w=1380', // Chemin vers l'image
+            ],
+            // Ajoutez d'autres recettes ici...
         ];
 
-        // Fusionner tous les tableaux de recettes
-        $recettes = array_merge($recettes, $recettes_proteinees, $recettes_smoothies);
-
-        // Insérer les recettes dans la base de données
         foreach ($recettes as $recette) {
             DB::table('plan_nutritionnels')->insert($recette);
         }

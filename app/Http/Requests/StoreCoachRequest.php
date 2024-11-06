@@ -89,6 +89,7 @@ class StoreCoachRequest extends FormRequest
             'disponibilites' => 'nullable|string',
             'reseaux_sociaux' => 'nullable|json', 
             'avis_clients' => 'nullable|json',   
+            'tarif' => 'nullable|json',
         ];
     }
 }

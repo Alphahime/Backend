@@ -8,16 +8,17 @@ class StoreReservationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Adjust based on your authorization logic
+        return true; 
     }
 
     public function rules(): array
-    {
-        return [
-            'coach_id' => 'required|exists:coaches,id',
-            'date_seance' => 'required|date',
-            'status' => 'required|string|in:pending,completed,cancelled',
-        ];
-    }
+{
+    return [
+        'coach_id' => 'required|exists:coaches,id',
+        'date_seance' => 'required|date',
+        'status' => 'required|string|in:en_attente,confirme,termine',
+    ];
+}
+
     
 }
