@@ -1,34 +1,22 @@
-# Dockerfile pour le backend Laravel
-FROM php:8.3-fpm
+# Dockerfile for Laravel Backend
 
-# Installe les extensions PHP requises pour Laravel
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql gd
+# Utiliser une image PHP avec Apache
+FROM php:8.3-apache
 
-# Installe Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Installer les extensions requises
+RUN docker-php-ext-install pdo pdo_mysql
 
-# Configure le répertoire de travail
-WORKDIR /var/www
+# Installer Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copie les fichiers Laravel dans le conteneur
+# Définir le répertoire de travail
+WORKDIR /var/www/html
+
+# Copier les fichiers de l'application Laravel
 COPY . .
 
-# Installe les dépendances Laravel
+# Installer les dépendances de l'application Laravel
 RUN composer install
 
-# Définit les permissions
-RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www
-
-# Expose le port PHP-FPM
-EXPOSE 9000
-
-# Commande de démarrage pour PHP-FPM
-CMD ["php-fpm"]
+# Exposer le port 80
+EXPOSE 80

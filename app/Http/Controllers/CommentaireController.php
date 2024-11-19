@@ -73,12 +73,28 @@ class CommentaireController extends Controller
      */
     public function store(StoreCommentaireRequest $request): JsonResponse
     {
-        $validatedData = $request->validated();
-        $validatedData['user_id'] = Auth::id();  
-    
-        
-        $commentaire = Commentaire::create($validatedData);
-        return response()->json($commentaire, 201);
+        try {
+            $validatedData = $request->validated();
+
+            // Si l'utilisateur est connecté, associer son ID
+            if (Auth::check()) {
+                $validatedData['user_id'] = Auth::id();
+            }
+
+            $commentaire = Commentaire::create($validatedData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Commentaire ajouté avec succès.',
+                'data' => $commentaire,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'ajout du commentaire.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
     
 
@@ -119,29 +135,34 @@ class CommentaireController extends Controller
      *     @OA\Response(response=403, description="Action non autorisée.")
      * )
      */
-    public function update(UpdateCommentaireRequest $request, Commentaire $commentaire): JsonResponse
+    public function update(StoreCommentaireRequest $request, Commentaire $commentaire): JsonResponse
     {
         $user = Auth::user();
 
         if ($user === null) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized. Please log in.'
+                'message' => 'Non autorisé. Veuillez vous connecter.'
             ], 401);
         }
 
         if ($commentaire->user_id !== $user->id) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized action.'
+                'message' => 'Action non autorisée.'
             ], 403);
         }
 
         $validatedData = $request->validated();
         $commentaire->update($validatedData);
-        
-        return response()->json($commentaire);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Commentaire mis à jour avec succès.',
+            'data' => $commentaire,
+        ]);
     }
+
 
     /**
      * @OA\Delete(
@@ -163,14 +184,14 @@ class CommentaireController extends Controller
         if ($user === null) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized. Please log in.'
+                'message' => 'Non autorisé. Veuillez vous connecter.'
             ], 401);
         }
 
         if ($commentaire->user_id !== $user->id) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized action.'
+                'message' => 'Action non autorisée.'
             ], 403);
         }
 
@@ -178,7 +199,8 @@ class CommentaireController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Commentaire supprimé avec succès.'
-        ], 204);
+            'message' => 'Commentaire supprimé avec succès.',
+        ]);
     }
 }
+

@@ -52,45 +52,32 @@ class RessourceController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        // Validation des données d'entrée
         $validated = $request->validate([
             'type_ressource' => 'required|string',
             'titre' => 'required|string',
             'description' => 'required|string',
-            'lien' => 'required|url',
-            'video' => 'nullable|url',  // Expecting URLs instead of uploaded files
-            'image' => 'nullable|url',  // Expecting URLs instead of uploaded files
+            'lien' => 'required|url', // Le lien doit être une URL
+            'video' => 'nullable|url', // La vidéo doit être une URL
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg', // L'image doit être un fichier image
             'domaine_sportif_id' => 'required|integer|exists:domaine_sportifs,id',
             'user_id' => 'required|integer|exists:users,id',
         ]);
     
+        // Si une image est téléchargée, nous la stockons
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('images', 'public'); // Enregistrer l'image dans le dossier 'images' dans le disque public
+        }
+    
+        // Créer la ressource avec les données validées
         $ressource = Ressource::create($validated);
     
+        // Retourner la réponse avec les données créées
         return response()->json([
             'success' => true,
             'message' => 'Ressource créée avec succès.',
             'data' => $ressource
         ], 201);
-    }
-    
-    public function update(Request $request, Ressource $ressource): JsonResponse
-    {
-        $validated = $request->validate([
-            'type_ressource' => 'required|string',
-            'titre' => 'required|string',
-            'description' => 'required|string',
-            'lien' => 'required|url',
-            'video' => 'nullable|url',  // Expecting URLs
-            'image' => 'nullable|url',  // Expecting URLs
-            'domaine_sportif_id' => 'required|integer|exists:domaine_sportifs,id',
-        ]);
-    
-        $ressource->update($validated);
-    
-        return response()->json([
-            'success' => true,
-            'message' => 'Ressource mise à jour avec succès.',
-            'data' => $ressource
-        ]);
     }
     
 

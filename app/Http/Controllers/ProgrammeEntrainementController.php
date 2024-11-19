@@ -7,7 +7,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
+use App\Models\User;
+// use Illuminate\Support\Facades\Mail;
+use App\Mail\ProgrammeAssigned;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 /**
  * @OA\Tag(name="Programmes d'Entraînement", description="Opérations liées aux programmes d'entraînement")
  *
@@ -131,4 +135,56 @@ class ProgrammeEntrainementController extends Controller
         $programmeEntrainement->delete();
         return response()->json(['message' => 'Programme d\'entrainement supprimé avec succès.'], 200);
     }
+
+    public function assignUser(Request $request, $programmeId): JsonResponse
+{
+    // Validation des données
+    $validator = Validator::make($request->all(), [
+        'user_id' => 'required|exists:users,id',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    // Récupérer le programme d'entraînement
+    $programme = ProgrammeEntrainement::find($programmeId);
+    if (!$programme) {
+        return response()->json(['message' => 'Programme non trouvé.'], 404);
+    }
+
+    // Récupérer l'utilisateur
+    $user = User::find($request->user_id);
+    if (!$user) {
+        return response()->json(['message' => 'Utilisateur non trouvé.'], 404);
+    }
+
+    // Associer le programme à l'utilisateur
+    $programme->coach_id = $user->id;
+    $programme->save();
+
+    // Envoyer l'email de notification à l'utilisateur
+    Mail::to($user->email)->send(new ProgrammeAssigned($user, $programme));
+
+    return response()->json(['message' => 'Programme assigné avec succès à l\'utilisateur.', 'programme' => $programme], 200);
+}
+
+public function getUserProgrammes(): JsonResponse
+{
+    // Récupérer l'utilisateur connecté
+    $user = Auth::user();
+
+    if ($user) {
+        // Récupérer tous les programmes où l'utilisateur est le coach assigné
+        $programmes = ProgrammeEntrainement::where('coach_id', $user->id)->get();
+        
+        // Retourner les programmes sous forme de réponse JSON
+        return response()->json($programmes);
+    }
+
+    // Si l'utilisateur n'est pas connecté, renvoyer une erreur
+    return response()->json(['error' => 'Utilisateur non connecté.'], 401);
+}
+
+    
 }

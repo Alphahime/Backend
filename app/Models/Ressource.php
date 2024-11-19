@@ -15,4 +15,13 @@ class Ressource extends Model
     {
         return $this->belongsTo(DomaineSportif::class);
     }
+
+
+    /**
+     * Relation avec le modèle User
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

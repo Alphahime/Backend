@@ -10,8 +10,9 @@ class Reservation extends Model
 
     public function coach()
     {
-        return $this->belongsTo(User::class, 'coach_id');
+        return $this->belongsTo(Coach::class, 'coach_id');
     }
+    
     
     public function client()
     {

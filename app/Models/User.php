@@ -110,6 +110,14 @@ class User extends Authenticatable implements JWTSubject
         $this->attributes['mot_de_passe'] = bcrypt($value);
     }
 
+    public function programmes()
+{
+    return $this->hasMany(ProgrammeEntrainement::class, 'coach_id');
+}
 
-
+// Relations avec Ressource
+public function ressources()
+{
+    return $this->hasMany(Ressource::class);
+}
 }

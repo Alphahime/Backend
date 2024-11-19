@@ -14,9 +14,11 @@ class StoreCommentaireRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contenu' => 'required|string',  
-            'article_id' => 'required|exists:articles,id',
-            'blog_id' => 'required|exists:blogs,id',
+            'contenu' => 'required|string|max:500',
+            'email' => 'required|email',
+            'mot_de_passe' => 'required|string|min:6',
+            'article_id' => 'required|integer|exists:articles,id',
+            'blog_id' => 'required|integer|exists:blogs,id',
         ];
     }
 }

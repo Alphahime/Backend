@@ -28,7 +28,8 @@ class ProgrammeEntrainementSeeder extends Seeder
                 'niveau_difficulte' => 'Avancé',
                 'type_programme' => 'présentiel',
                 'status' => 'actif',
-                'images' => 'https://www.example.com/path/to/real-image1.jpg',
+                'images' => 'https://img.freepik.com/photos-gratuite/homme-athletique-courir-dans-fond-noir_1301-6629.jpg?t=st=1731725478~exp=1731729078~hmac=5b599e10e9833ea002988b20c573979b5714a2e89b076b8a444785888c03304d&w=740',
+                'coach_id' => 1,
             ],
             [
                 'nom' => 'Programme Cardio Intensif',
@@ -38,7 +39,8 @@ class ProgrammeEntrainementSeeder extends Seeder
                 'niveau_difficulte' => 'Intermédiaire',
                 'type_programme' => 'en ligne',
                 'status' => 'actif',
-                'images' => 'https://www.example.com/path/to/real-image2.jpg',
+                'images' => 'https://img.freepik.com/photos-gratuite/homme-athletique-courir-dans-fond-noir_1301-6629.jpg?t=st=1731725478~exp=1731729078~hmac=5b599e10e9833ea002988b20c573979b5714a2e89b076b8a444785888c03304d&w=740',
+                'coach_id' => 1,
             ],
         ];
 

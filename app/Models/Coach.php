@@ -37,4 +37,11 @@ class Coach extends Model
     {
         return $this->hasMany(Reservation::class, 'coach_id');
     }
+    
+
+    public function programmesEntrainement()
+{
+    return $this->hasMany(ProgrammeEntrainement::class, 'coach_id');
+}
+
 }

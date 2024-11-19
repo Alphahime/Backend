@@ -42,7 +42,7 @@ Route::get('/commentaires', [CommentaireController::class, 'index']);
 Route::middleware(['auth:api'])->group(function () {
     Route::post('logout', [JWTAuthController::class, 'logout']);
     Route::get('user', [JWTAuthController::class, 'getUser']);
-
+    Route::get('/users/{id}', [UserController::class, 'show']);
     // Routes Messages
     Route::get('messages', [MessageController::class, 'index']);
   
@@ -80,13 +80,27 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/reservations/{reservation}', [ReservationController::class, 'update']);
     Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy']);
     
-    // Route::get('/coaches/{id}/reservations', [CoachController::class, 'getReservations']);
+    // Route::get('/coaches/{id}/reservations', [CoachController::class, 'getCoachReservations']);
   
-    Route::get('/coaches/reservations', [CoachController::class, 'getReservationsByCoach']);
+    // Route::get('/coaches/reservations', [CoachController::class, 'getCoachReservations']);
+    Route::post('programmes/{programmeId}/assign', [ProgrammeEntrainementController::class, 'assign']);
+
+    Route::get('/user/reservations', [ReservationController::class, 'getUserReservations']);
+
+    Route::get('/user/programmes', [ProgrammeEntrainementController::class, 'getUserProgrammes']);
+    Route::get('/reservations/coach/{coachId}', [ReservationController::class, 'getCoachReservations']);
+
+    // Routes Ressources
+    Route::post('ressources', [RessourceController::class, 'store']);
+    Route::get('ressources/{ressource}', [RessourceController::class, 'show']);
+    Route::put('ressources/{ressource}', [RessourceController::class, 'update']);
+    Route::delete('ressources/{ressource}', [RessourceController::class, 'destroy']);
+    Route::post('messages', [MessageController::class, 'store']);
+
 
 });
 Route::get('/coaches', [CoachController::class, 'index']);
-
+Route::delete('/coachs/{id}', [CoachController::class, 'deleteCoach']);
 // Route pour ajouter un plan nutritionnel
 Route::post('plans-nutritionnels', [PlanNutritionnelController::class, 'store']);
 // Routes pour récupérer, mettre à jour et supprimer des plans nutritionnels
@@ -111,6 +125,7 @@ Route::delete('/commentaires/{commentaire}', [CommentaireController::class, 'des
  Route::delete('programme-entrainements/{programmeEntrainement}', [ProgrammeEntrainementController::class, 'destroy']);
 
 
+
  Route::get('/suivis', [SuiviSeanceController::class, 'index']);
  Route::post('/suivis', [SuiviSeanceController::class, 'store']);
  Route::get('/suivis/{id}', [SuiviSeanceController::class, 'show']);
@@ -123,7 +138,7 @@ Route::delete('/commentaires/{commentaire}', [CommentaireController::class, 'des
   Route::get('/coaches/{id}', [CoachController::class, 'show']);
   Route::put('/coaches/{id}', [CoachController::class, 'update']);
   Route::delete('/coaches/{id}', [CoachController::class, 'destroy']);
-  Route::get('/coaches/{id}/reservations', [CoachController::class, 'getReservations']);
+  // Route::get('/coaches/{id}/reservations', [CoachController::class, 'getReservations']);
     // Routes pour rôles et permissions
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('permissions', PermissionController::class);
@@ -135,14 +150,10 @@ Route::delete('/commentaires/{commentaire}', [CommentaireController::class, 'des
     Route::get('/reservations', [ReservationController::class, 'index']);
 
 
-     // Routes Ressources
-     Route::post('ressources', [RessourceController::class, 'store']);
-     Route::get('ressources/{ressource}', [RessourceController::class, 'show']);
-     Route::put('ressources/{ressource}', [RessourceController::class, 'update']);
-     Route::delete('ressources/{ressource}', [RessourceController::class, 'destroy']);
-     Route::post('messages', [MessageController::class, 'store']);
-
+     
 
      Route::post('/reservations/{reservation}/accept', [ReservationController::class, 'accepterReservation']);
      Route::post('/reservations/{reservation}/cancel', [ReservationController::class, 'annulerReservation']);
     //  Route::middleware('auth:api')->get('/mes-reservations', [ReservationController::class, 'mesReservations']);
+
+    Route::post('/programme-entrainements/{programmeId}/assign-user', [ProgrammeEntrainementController::class, 'assignUser']);

@@ -23,4 +23,9 @@ class ProgrammeEntrainement extends Model
     {
         return $this->belongsTo(Categorie::class, 'categorie_id');
     }
+
+    public function coach()
+{
+    return $this->belongsTo(Coach::class, 'coach_id');
+}
 }

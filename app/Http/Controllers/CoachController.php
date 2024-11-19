@@ -16,7 +16,7 @@ use App\Http\Requests\UpdateCoachRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
-
+use Illuminate\Http\JsonResponse;
 
 /**
  * @OA\Tag(
@@ -288,7 +288,16 @@ class CoachController extends Controller
     }
 
 
-   
+    public function deleteCoach($id)
+    {
+        $coach = Coach::find($id);
+        if ($coach) {
+            $coach->delete();
+            return response()->json(['message' => 'Coach supprimé avec succès'], 200);
+        }
+        return response()->json(['message' => 'Coach introuvable'], 404);
+    }
+    
 
     public function acceptCoach($id)
     {
@@ -341,51 +350,5 @@ class CoachController extends Controller
     }
     
     
-    public function getReservations()
-    {
-        // Vérifie si l'utilisateur est authentifié
-        if (!Auth::check()) { // Correction ici
-            return redirect()->route('login')->with('error', 'Vous devez être connecté pour voir vos réservations.');
-        }
-    
-        // Récupère l'ID de l'utilisateur connecté (le coach)
-        $coachId = Auth::user()->id; // Correction ici
-    
-        // Récupère les réservations associées uniquement à ce coach
-        $reservations = Reservation::where('coach_id', $coachId)->get();
-    
-        // Retourne la liste des réservations dans la vue
-        return view('reservations.index', compact('reservations'));
-    }
-    
-    
-    public function getReservationsByCoach()
-    {
-        // Vérifier si l'utilisateur est authentifié
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Vous devez être connecté pour voir vos réservations.'], 401);
-        }
-    
-        // Récupérer l'utilisateur connecté
-        $user = Auth::user();
-    
-        // Vérifier si l'utilisateur a le rôle "coach"
-        if (!$user->hasRole('coach')) { 
-            return response()->json(['error' => 'Accès non autorisé ou utilisateur non coach'], 403);
-            
-        }
-      
-
-    
-        // Récupérer les réservations pour le coach connecté
-        $reservations = Reservation::where('coach_id', $user->id)->get();
-    
-        return response()->json([
-            'message' => 'Réservations récupérées avec succès',
-            'reservations' => $reservations
-        ], 200);
-    }
-    
-     
     
 }

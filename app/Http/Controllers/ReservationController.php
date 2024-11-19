@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 class ReservationController extends Controller
 {
     public function index(): JsonResponse
@@ -99,17 +99,60 @@ class ReservationController extends Controller
         return response()->json(['message' => 'La réservation a été annulée et l\'email a été envoyé.']);
     }
 
-     // Nouvelle fonction pour récupérer les réservations du coach connecté
-     public function mesReservations(): JsonResponse
-     {
-         $user = Auth::user();
- 
-         // Vérifiez si l'utilisateur est un coach
-         if ($user && $user->role === 'coach') {
-             $reservations = Reservation::where('coach_id', $user->id)->get();
-             return response()->json($reservations);
-         }
- 
-         return response()->json(['error' => 'Accès non autorisé ou utilisateur non coach'], 403);
-     }
+    
+
+     public function getUserReservations(): JsonResponse
+{
+    $user = Auth::user();
+
+    if ($user) {
+        // Retrieve reservations where the user is the one who created them
+        $reservations = Reservation::where('user_id', $user->id)->get();
+        return response()->json($reservations);
+    }
+
+    return response()->json(['error' => 'utilisateur non connecté '], 401);
+}
+
+public function getCoachReservations($coachId)
+{
+    try {
+        $reservations = Reservation::where('coach_id', $coachId)->get();
+
+        if ($reservations->isEmpty()) {
+            return response()->json([
+                'message' => 'Aucune réservation trouvée pour ce coach.',
+            ], 404);
+        }
+
+        return response()->json($reservations, 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Erreur lors de la récupération des réservations.',
+            'details' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+
+
+public function rappelReservation(): JsonResponse
+{
+    try {
+        // Récupérer toutes les réservations dont la date de la séance est demain
+        $reservations = Reservation::whereDate('date_seance', Carbon::today()->addDay(1))->get();
+
+        foreach ($reservations as $reservation) {
+            
+        $client = $reservation->client;
+        if ($client) {
+            Mail::to($client->email)->send(new \App\Mail\RappelReservation($reservation));
+        }
+        }
+
+        return response()->json(['message' => 'Les rappels de réservation ont été envoyés avec succès.']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
 }
