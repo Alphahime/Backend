@@ -68,33 +68,46 @@ class PlanNutritionnelController extends Controller
      */
     public function index(Request $request)
     {
-        // Start with all plans
+        // Commencer avec toutes les recettes (plan_nutritionnels)
         $query = PlanNutritionnel::query();
         
-        // Filtering logic based on query parameters
-        if ($request->has('nom')) {
+        // Filtrage par nom de recette (si spécifié)
+        if ($request->has('nom') && $request->nom) {
             $query->where('nom', 'like', '%' . $request->nom . '%');
         }
-    
-        if ($request->has('type_alimentation')) {
-            $query->where('type_alimentation', $request->type_alimentation);
-        }
-    
-        if ($request->has('calories_totale')) {
-            $query->where('calories_totale', $request->calories_totale);
-        }
-    
-        // Get the filtered results
-        $plans = $query->get();
         
-        // Decode ingredients and steps
+        // Filtrage par type d'alimentation
+        if ($request->has('type_alimentation') && !empty($request->type_alimentation)) {
+            $query->whereIn('type_alimentation', $request->type_alimentation);
+        }
+        
+        // Filtrage par calories totales
+        if ($request->has('calories_totale') && !empty($request->calories_totale)) {
+            $query->whereIn('calories_totale', $request->calories_totale);
+        }
+        
+        // Filtrage par type d'activité
+        if ($request->has('type_activite') && !empty($request->type_activite)) {
+            // Assurez-vous d'avoir une relation définie si vous voulez filtrer selon une table liée
+            // Exemple si vous avez une relation "activites" avec PlanNutritionnel
+            $query->whereHas('activites', function($query) use ($request) {
+                $query->whereIn('id', $request->type_activite);
+            });
+        }
+    
+        // Exécuter la requête et récupérer les résultats filtrés
+        $plans = $query->get();
+    
+        // Décoder les ingrédients et étapes de chaque plan nutritionnel
         foreach ($plans as $plan) {
             $plan->ingredients = json_decode($plan->ingredients, true);
             $plan->etapes = json_decode($plan->etapes, true);
         }
     
-        return response()->json($plans, 200); // Return the filtered list as JSON
+        // Retourner les résultats filtrés sous forme de JSON
+        return response()->json($plans, 200);
     }
+    
     
     /**
      * @OA\Post(

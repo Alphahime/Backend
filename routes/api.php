@@ -157,3 +157,4 @@ Route::delete('/commentaires/{commentaire}', [CommentaireController::class, 'des
     //  Route::middleware('auth:api')->get('/mes-reservations', [ReservationController::class, 'mesReservations']);
 
     Route::post('/programme-entrainements/{programmeId}/assign-user', [ProgrammeEntrainementController::class, 'assignUser']);
+    Route::post('/coaches/search', [CoachController::class, 'search']);

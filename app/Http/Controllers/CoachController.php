@@ -350,5 +350,29 @@ class CoachController extends Controller
     }
     
     
-    
+    public function search(Request $request)
+    {
+        $query = Coach::query();
+
+        if ($request->has('objectives')) {
+            $query->whereJsonContains('services', $request->objectives);
+        }
+
+        if ($request->has('level')) {
+            $query->where('experience', 'like', '%'.$request->level.'%');
+        }
+
+        if ($request->has('availability')) {
+            $query->whereJsonContains('disponibilites', $request->availability);
+        }
+
+        if ($request->has('preferred_sports')) {
+            $query->whereJsonContains('services', $request->preferred_sports);
+        }
+
+        $coaches = $query->get();
+
+        return response()->json($coaches);
+    }
+
 }
